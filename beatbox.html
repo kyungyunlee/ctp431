@@ -253,7 +253,8 @@
 
         source = context.createBufferSource();
         source.buffer = buffers[i];
-        source.connect(context.destination);
+        source.connect(gain_nodes[i]);
+        gain_nodes[i].connect(context.destination);
         source.start()
 
         element[i].classList.add("shake");
@@ -272,9 +273,9 @@
 
     function db2gain(db_gain) {
         var gain = 1.0;
-        gain = (1/20) * Math.exp(db_gain + 1e-6);
+        gain = Math.pow(10, db_gain/20);
         console.log(db_gain, gain);
-        return gain
+        return gain 
     }
 
     // keyboard mapping 
