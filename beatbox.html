@@ -11,23 +11,38 @@
 <style>
     body {
         margin:2%;
+        background: rgb(176,224,230);
     }
-    button {
+    input { 
+        margin:1%;
+    }
+    button.inst {
         padding: 5px;
-        background: rgb(200, 200, 200);
+        background: rgb(222, 239, 252);
         border: 1px solid rgb(122, 122, 122);
         border-radius: 50%;
         outline: none;
-        width:110px;
-        height:110px;
-        font-size:15px
+        width:105px;
+        height:105px;
+        font-size:15px;
     }
 
-    button.active, button:active {
+    button.inst.active, button:active {
         background: rgb(100, 100, 100);
         border: 1px solid rgb(0,0,0);
         box-shadow: 0 0 2px 0 rgb(0,0,0);
     }
+
+    .fileloader {
+        background: rgb(219, 227, 235);
+        border: 1px solid rgb(0,0,0);
+        width:110px;
+        height: 80px;
+        font-size: 15px;
+        padding: 1%;
+        margin:1%;
+    }
+
     div#kick{
         width:130px;
         height:600px;
@@ -141,7 +156,8 @@
 
 <body>
 
-<h1> Homework#1: Beatbox </h1>
+<h1> Project#1: Drumming Shiba </h1>
+<p> The drum sounds are recorded with my voice, and modified with Audacity</p>
 <br>
 
 <div>
@@ -157,28 +173,38 @@
         <div class="col-5" id="control_container">
             <h2>Add background music</h2>
             <div class="row">
+                <button class="fileloader" onclick="loadRemoteFile(url)"><p>Load demo Song (C funk groove)</p></button>
+                <p> or </p>
+                <input id="fileChooseInput" type="file"></input>
+            </div>
+            <p id="fileLoadIndicator"></p>
+            <br>
+            <div>
+                <button onclick="playSound(myAudioBuffer)">Play</button>
+                <button onclick="stopSound()">Stop</button>
             </div> 
+            <br>
             <h2>Play drum</h2>
             <div class="row">
                 <div id="kick" class="col-3">
-                    <button id="kickPad" onmousedown="playdrum(0)"> Kick ('a' key)</button>
+                    <button id="kickPad" class="inst" onmousedown="playdrum(0)"> Kick ('a' key)</button>
                     <p id="kickVolLabel"></p>
-                    <input class="volume" onchange="changegain(0,this.value)" id="kickVol" title="Kick volume" type="range" min="-24" max ="0" value = "-12">
+                    <input class="volume" onchange="changegain(0,this.value)" id="kickVol" title="Kick volume" type="range" min="-6" max ="18" value = "6">
                 </div>
                 <div id="snare" class="col-3">
-                    <button id="snarePad" onmousedown="playdrum(1)"> Snare ('s' key)</button>
+                    <button id="snarePad" class="inst" onmousedown="playdrum(1)"> Snare ('s' key)</button>
                     <p id="snareVolLabel"></p>
-                    <input class="volume" onchange="changegain(1,this.value)" id="snareVol" title="Snare volume" type="range" min="-24" max ="0" value = "-12">
+                    <input class="volume" onchange="changegain(1,this.value)" id="snareVol" title="Snare volume" type="range" min="-6" max ="18" value = "6">
                 </div>
                 <div id="hihat" class="col-3">
-                    <button id="hihatPad" onmousedown="playdrum(2)"> Hihat ('l' key)</button>
+                    <button id="hihatPad" class="inst" onmousedown="playdrum(2)"> Hihat ('l' key)</button>
                     <p id="hihatVolLabel"></p>
-                    <input class="volume" onchange="changegain(2,this.value)" id="hihatVol" title="Hihat volume" type="range" min="-24" max ="0" value = "-12">
+                    <input class="volume" onchange="changegain(2,this.value)" id="hihatVol" title="Hihat volume" type="range" min="-6" max ="18" value = "6">
                 </div>
                 <div id="symbol" class="col-3">
-                    <button id="symbolPad" onmousedown="playdrum(3)"> Symbol ('p' key)</button>
+                    <button id="symbolPad" class="inst" onmousedown="playdrum(3)"> Symbol ('p' key)</button>
                     <p id="symbolVolLabel"></p>
-                    <input class="volume" onchange="changegain(3,this.value)" id="symbolVol" title="Symbol volume" type="range" min="-24" max ="0" value = "-12">
+                    <input class="volume" onchange="changegain(3,this.value)" id="symbolVol" title="Symbol volume" type="range" min="-6" max ="18" value = "6">
                 </div>
             </div>
 
@@ -196,47 +222,57 @@
     var volume_label_id = new Array("kickVolLabel","snareVolLabel","hihatVolLabel","symbolVolLabel");
     var gain_nodes = new Array(4);
 
+    var myAudioBuffer = null;
+
+    var remoteAudioBuffer = null;
+    var url = "assets/project1/funkgroove.mp3";
+
     for (i  = 0; i < 4; i++) {
         gain_nodes[i] = context.createGain();
         var vol = document.getElementById(volume_id[i]).value;
+        console.log("loop" + vol);
         gain_nodes[i].gain.value = db2gain(vol);
         document.getElementById(volume_label_id[i]).innerHTML = 'Volume:  ' + vol + 'dB'; 
     }
 
     var kick = new XMLHttpRequest();
-    kick.open("Get","assets/project1/kick.wav",true);   //  <---- replace this file with yours
-    kick.responseType = "arraybuffer";
-    kick.onload = function(){
+        kick.open("Get","assets/project1/kick.wav",true); 
+        kick.responseType = "arraybuffer";
+        kick.onload = function(){
         context.decodeAudioData(kick.response, function(buffer){buffers[0] = buffer;});
     }
     kick.send();
 
     var snare = new XMLHttpRequest();
-    snare.open("Get","assets/project1/snare.wav",true);  //  <---- replace this file with yours
-    snare.responseType = "arraybuffer";
-    snare.onload = function(){
+        snare.open("Get","assets/project1/snare.wav",true); 
+        snare.responseType = "arraybuffer";
+        snare.onload = function(){
         context.decodeAudioData(snare.response, function(buffer){buffers[1] = buffer;});
     }
     snare.send();
 
     var hihat = new XMLHttpRequest();
-    hihat.open("Get","assets/project1/hihat.wav",true);  //  <---- replace this file with yours
-    hihat.responseType = "arraybuffer";
-    hihat.onload = function(){
+        hihat.open("Get","assets/project1/hihat.wav",true);  
+        hihat.responseType = "arraybuffer";
+        hihat.onload = function(){
         context.decodeAudioData(hihat.response, function(buffer){buffers[2] = buffer;});
     }
     hihat.send();
     
     var symbol = new XMLHttpRequest();
-    symbol.open("Get","assets/project1/symbol.wav",true);  //  <---- replace this file with yours
-    symbol.responseType = "arraybuffer";
-    symbol.onload = function(){
+        symbol.open("Get","assets/project1/symbol.wav",true);  
+        symbol.responseType = "arraybuffer";
+        symbol.onload = function(){
         context.decodeAudioData(symbol.response, function(buffer){buffers[3] = buffer;});
     }
     symbol.send();
 
 
     window.onload=function(){
+        var file_control = document.getElementById("fileChooseInput");
+        file_control.addEventListener("change", fileChanged, false);
+
+        
         window.addEventListener('keydown', function (key) {
             keyboardDown(key);
         }, false);
@@ -244,6 +280,27 @@
         window.addEventListener('keyup', function (key) {
             keyboardUp(key);
         }, false);
+    }
+
+    function fileChanged(e){
+        var result = document.getElementById("fileLoadIndicator");
+        result.innerHTML = ""; 
+        var file = e.target.files[0];
+        console.log(file);
+        var fileReader = new FileReader();
+        fileReader.onload = fileLoaded;
+        fileReader.readAsArrayBuffer(file);
+
+    }
+
+    function fileLoaded(e){
+       context.decodeAudioData(e.target.result, function(buffer){
+           myAudioBuffer = buffer;
+
+            var result = document.getElementById("fileLoadIndicator");
+            result.innerHTML = "file Loaded"; 
+       });
+       console.log("file loaded");
     }
 
     var element = document.querySelectorAll("img")
@@ -260,16 +317,53 @@
         element[i].classList.add("shake");
 
         setTimeout(function(){
-            console.log("bye");
-            console.log(i);
             element[i].classList.remove("shake");
         }, 101);
     }
+
+    // Remote file 
+    function loadRemoteFile(url){
+        var result = document.getElementById("fileLoadIndicator");
+        result.innerHTML = ""; 
+
+        console.log("start loading " +  url);
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.responseType = "arraybuffer";
+        request.onload = function(){
+            console.log(url + "has been loaded.");
+            context.decodeAudioData(request.response, function(buffer) {
+                myAudioBuffer = buffer;
+                console.log(url + "has been decoded");
+
+                var result = document.getElementById("fileLoadIndicator");
+                result.innerHTML = "file Loaded"; 
+            });
+        }
+        request.send();
+    }
+
+    // Local file 
+    var mysource = null;
+
+    function playSound(anybuffer){
+        mysource = context.createBufferSource();
+        mysource.buffer = anybuffer;
+        mysource.connect(context.destination);
+        mysource.start(0);
+    }
+
+    function stopSound() {
+	  if (mysource) {
+	    mysource.stop();
+	  }
+	}	
 
     function changegain(i,changedvalue){
         gain_nodes[i].gain.value = db2gain(changedvalue);
         document.getElementById(volume_label_id[i]).innerHTML = 'Volume:  ' + changedvalue + 'dB'; 
     }
+
 
     function db2gain(db_gain) {
         var gain = 1.0;
@@ -278,27 +372,28 @@
         return gain 
     }
 
+
     // keyboard mapping 
     function keyboardDown(key) {
         switch (key.keyCode) {
             case 65: //'a'
                 var kickpad = document.getElementById("kickPad"); 
-                kickpad.className = 'active';
+                kickpad.className = 'inst active';
                 simulateClick(kickpad);
                 break;
             case 83: //'s'
                 var snarepad = document.getElementById("snarePad"); 
-                snarepad.className = 'active';
+                snarepad.className = 'inst active';
                 simulateClick(snarepad);
                 break;
             case 76: //'l'
                 var hihatpad = document.getElementById("hihatPad"); 
-                hihatpad.className = 'active';
+                hihatpad.className = 'inst active';
                 simulateClick(hihatpad);
                 break;
             case 80: //'p'
                 var symbolpad = document.getElementById("symbolPad"); 
-                symbolpad.className = 'active';
+                symbolpad.className = 'inst active';
                 simulateClick(symbolpad);
                 break;
         }
@@ -308,19 +403,19 @@
         switch (key.keyCode) {
             case 65: //'a'
                 var kickpad = document.getElementById("kickPad"); 
-                kickpad.className = '';
+                kickpad.className = 'inst';
                 break;
             case 83: //'s'
                 var snarepad = document.getElementById("snarePad"); 
-                snarepad.className = '';
+                snarepad.className = 'inst';
                 break;
             case 76: //'l'
                 var hihatpad = document.getElementById("hihatPad"); 
-                hihatpad.className = '';
+                hihatpad.className = 'inst';
                 break;
             case 80: //'p'
                 var symbolpad = document.getElementById("symbolPad"); 
-                symbolpad.className = '';
+                symbolpad.className = 'inst';
                 break;
         }
     }
