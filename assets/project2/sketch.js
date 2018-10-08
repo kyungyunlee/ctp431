@@ -1,7 +1,7 @@
 var song;
 var button;
 var fft, amplitude, level;
-var mysongs = ['select a song', 'vulfpeck_birds_of_a_feather.mp3', 'vulfpeck_deantown.mp3', 'vulfpeck_softparade.mp3'];
+var mysongs = ['vulfpeck_birds_of_a_feather.mp3', 'vulfpeck_deantown.mp3', 'vulfpeck_softparade.mp3'];
 var sel; 
 
 // text parameters
@@ -30,17 +30,18 @@ function preload() {
 
     // dropdown menu for song selection
     sel = createSelect();
-    sel.parent("inputText");
+    sel.parent("right-column");
 
     for (var s=0; s<mysongs.length;s++){
         sel.option(mysongs[s]);
     }
+    song = loadSound('assets/project2/' + mysongs[0], successCallback, errorCallback, whileLoading);
     sel.changed(mySelectEvent);
 
     // play/pause button
     button = createButton("play");
     button.mousePressed(togglePlaying);
-    button.parent("inputText");
+    button.parent("right-column");
  }
 
 
@@ -83,14 +84,11 @@ function draw(){
     high_mid_level = fft.getEnergy('highMid');
     treble_level = fft.getEnergy(2600, 14000); // high-mid + treble
     
-    var level_array = [bass_level, low_mid_level, mid_level, treble_level]; 
-    max_level = max(level_array);
-
     background(235, 202, 193);
     push ();
     noStroke();
     fill (color(253, 239,231));
-    rect (0,0, windowWidth, windowHeight/4*3.5);
+    rect (0,0, windowWidth, windowHeight/4*3.5); // floor rectangle
     pop ();
 
     // remove if more than 20 histories 
@@ -184,13 +182,16 @@ function draw(){
     }
 
     // add frequency descriptions at the bottom
-    var freq_range = ['Bass:', 'Low-mid:', 'Mid:', 'High:2600hz~']
+    var freq_range = ['Bass: 20~140hz', 'Low-mid: 140~400hz', 'Mid: 400~2600hz', 'High: 2600hz~']
     textFont("Helvetica");
     noStroke();
-    if (mouseY > windowHeight/2) {
+    textSize(13);
+    fill (color(0));
+    textAlign(LEFT, BASELINE);
+    // text ("put your mouse here for \nfrequency descriptions of each letter", 0 , windowHeight*0.84);
+    if (mouseY > windowHeight/4*3.5) {
         for (var i=0;i<words.length;i++){
-            textSize(20);
-            fill (color(0));
+            textSize(13)
             text (freq_range[i],xpos[i], windowHeight*0.87);
         }
     } 
@@ -205,9 +206,17 @@ function newText(){
 
 
 function mySelectEvent (){
+    if (song && song.isPlaying()){
+        song.stop();
+        curr_segment=0;
+    }
     button.html("loading..please wait");
     song_name = sel.value();
     song = loadSound('assets/project2/' + song_name, successCallback, errorCallback, whileLoading);
+
+    // connect input to new song
+    fft.setInput(song);
+    amplitude.setInput(song);
 }
 
 

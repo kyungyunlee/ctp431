@@ -19,6 +19,10 @@
         z-index: 2;
         left:2%;
         top:2%;
+        width:100%;
+    }
+    #description{
+        right:3%;
     }
     textarea {
         border-radius:0;
@@ -28,12 +32,29 @@
         background-color:rgb(253, 239,231);
         font-size:3em;
     }
+    #right-column {
+    float: left;
+    width: 50%;
+    display: block;
+    height:inherit;
+    }
+
+    #left-column {
+    float: left;
+    width: 50%;
+    height:inherit;
+    }
 </style>
 
 <body>
     <div id="inputText">
-        <textarea id="fourletters" rows="1" cols="8" maxlength="4">vulf</textarea>
-        <p>write 4 letters and <button id="submit">submit</button></p>
+        <div id="left-column">
+            <textarea id="fourletters" rows="1" cols="8" maxlength="4">vulf</textarea>
+        <p id="description">write 4 letters and <button id="submit">display</button></p>
+        </div>
+        <div id="right-column">
+            <p>This page features songs of the awesome band, vulfpeck</p>
+        </div>
     </div>
 </body>
 
