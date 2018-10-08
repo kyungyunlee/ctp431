@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+    <script language="javascript" type="text/javascript" src="p5.sound.js"></script>
+    <script src="assets/project2/sketch.js"></script>
+    <script type="text/javascript" src="assets/project2/animal_spirits.json"></script>
+    <script type="text/javascript" src="assets/project2/deantown.json"></script>
+    <script language="javascript" type="text/javascript" src="p5.dom.js"></script>
+
+    <title></title>
+</head>
+<style>
+    #inputText{
+        position:fixed;
+        z-index: 2;
+        left:2%;
+        top:2%;
+    }
+    textarea {
+        border-radius:0;
+        border:none;
+        border-bottom: 4px solid black;
+        box-shadow:none;
+        background-color:rgb(253, 239,231);
+        font-size:3em;
+    }
+</style>
+
+<body>
+    <div id="inputText">
+        <textarea id="fourletters" rows="1" cols="8" maxlength="4">vulf</textarea>
+        <p>write 4 letters and <button id="submit">submit</button></p>
+    </div>
+</body>
+
+</html>
+
