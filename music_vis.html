@@ -5,6 +5,7 @@
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script language="javascript" type="text/javascript" src="p5.sound.js"></script>
     <script src="assets/project2/sketch.js"></script>
     <script type="text/javascript" src="assets/project2/animal_spirits.json"></script>
@@ -14,6 +15,12 @@
     <title></title>
 </head>
 <style>
+    iframe {
+        position:fixed;
+        z-index:2;
+        left:2%;
+        bottom:2%;
+    }
     #inputText{
         position:fixed;
         z-index: 2;
@@ -24,13 +31,21 @@
     #description{
         right:3%;
     }
-    textarea {
+    textarea#fourletters {
         border-radius:0;
         border:none;
         border-bottom: 4px solid black;
         box-shadow:none;
         background-color:rgb(253, 239,231);
         font-size:3em;
+    }
+    textarea#youtube-link {
+        border-radius:0;
+        border:none;
+        border-bottom: 4px solid black;
+        box-shadow:none;
+        background-color:rgb(253, 239,231);
+        font-size:1em;
     }
     #right-column {
     float: left;
@@ -57,18 +72,55 @@
         <p id="description">write 4 letters and <button id="submit">display</button></p>
         </div>
         <div id="right-column">
-            <p>This page features songs of the awesome band, vulfpeck</p>
+            <p>This page features songs of the awesome band, vulfpeck.</p>
+            <!-- <p>3 options for you</p> -->
+            <div id="select-song"> </div>
+            <div id="mic">or <textarea id="youtube-link" rows="1" cols="40">paste youtube "EMBED" link</textarea>
+            <button id="submit-link">submit</button> or </div>
         </div>
     </div>
     <div id="canvasContainer"></div>
+    <div id="youtube-vid"></div>
     <div id="reference">
-        <p>Inspirations, tools and code</p>
-        <ul>
-            <li>Zach Lieberman's work <a href="http://www.ceros.com/originals/augmented-reality-apps/" target="_blank">on AR text</a></li>
-            <li>Vulfpeck!</li> 
-            <li>Programmed with <a href="http://p5js.org" target="_blank">p5.js</a> and my code can be found at <a href="http://github.com/kyungyunlee/ctp431" target="_blank">my github</a></li>
+        <p>comments, inspirations, tools and code</p>
+        <ul>   
+            <li>music have been clipped to <= 1 min just in case of copyright issues. It's only used for personal project :)</li>
+            <li>vulfpeck is an amazing band</li> 
+            <li>visuals are very much inspired by Zach Lieberman's work <a href="http://www.ceros.com/originals/augmented-reality-apps/" target="_blank">on AR text</a></li>
+            <li>programmed with <a href="http://p5js.org" target="_blank">p5.js</a> and my code can be found at <a href="http://github.com/kyungyunlee/ctp431" target="_blank">my github</a></li>
         </ul>
     </div>
+    <!-- <iframe width="10" height="10" src="https://www.youtube.com/embed/qTUnDV3MgVQ"  allow="autoplay; encrypted-media" ></iframe> -->
+
+    <!-- <script>
+      var check_valid_yt = function(yt_link) {        // var formData = new FormData();
+
+        var url = yt_link;
+        var http = new XMLHttpRequest();
+        http.open('HEAD', url, false);
+        http.setRequestHeader('Access-Control-Allow-Credentials', 'true');
+        http.setRequestHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+        http.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+        http.send();
+        console.log(http.status);
+        if (http.status == 404) {
+            console.log("fail");
+            var warn = document.createElement("p");
+            warn.setAttribute("id", "warning-msg");
+            var node = document.createTextNode("incorrect link error");
+            warn.appendChild(node);
+            var elem = document.getElementById("mic");
+            elem.appendChild(warn);
+        } else {
+            console.log("success");
+            var elem = document.getElementById("warning-msg");
+            elem.parentNode.removeChild(elem);
+
+        }
+
+        
+    }
+    </script> -->
 </body>
 
 </html>
