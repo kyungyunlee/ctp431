@@ -44,7 +44,7 @@
         border:none;
         border-bottom: 4px solid black;
         box-shadow:none;
-        background-color:rgb(253, 239,231);
+        /* background-color:rgb(253, 239,231); */
         font-size:1em;
     }
     #right-column {
@@ -63,20 +63,47 @@
     #reference {
         margin-left:2%;
     }
+
+    .modal-backdrop {
+        z-index: 0;
+        background-color: transparent;
+    }
 </style>
 
 <body>
     <div id="inputText">
         <div id="left-column">
             <textarea id="fourletters" rows="1" cols="8" maxlength="4">vulf</textarea>
-        <p id="description">write 4 letters and <button id="submit">display</button></p>
+            <p id="description">write 4 letters and <button id="submit">display</button></p>
+
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#menuModal">Select Audio here!</button>
+            <div id="current-audio-file"></div>
+            <div class="modal" id="menuModal" tabindex="-1" role="dialog" aria-labelledby="menuLabel" aria-hidden="true">
+                <div class="model-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="menuLabel">Choose an audio input</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="select-song">1. Vulfpeck samples: </div>
+                    <div id="user-mp3">or 2. </div>
+                    <div id="youtube-input">or 3. <textarea id="youtube-link" rows="1" cols="40">Paste youtube link</textarea>
+                    <button id="submit-link">submit</button> </div>
+                    <div id="mic">or 4. </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+                </div>
+                </div>
+            </div>
         </div>
+
         <div id="right-column">
             <p>This page features songs of the awesome band, vulfpeck.</p>
-            <!-- <p>3 options for you</p> -->
-            <div id="select-song"> </div>
-            <div id="mic">or <textarea id="youtube-link" rows="1" cols="40">paste youtube link</textarea>
-            <button id="submit-link">submit</button> or </div>
         </div>
     </div>
     <div id="canvasContainer">
@@ -92,37 +119,11 @@
             <li>programmed with <a href="http://p5js.org" target="_blank">p5.js</a> and my code can be found at <a href="http://github.com/kyungyunlee/ctp431" target="_blank">my github</a></li>
         </ul>
     </div>
-    <!-- <iframe width="10" height="10" src="https://www.youtube.com/embed/qTUnDV3MgVQ"  allow="autoplay; encrypted-media" ></iframe> -->
 
-    <!-- <script>
-      var check_valid_yt = function(yt_link) {        // var formData = new FormData();
 
-        var url = yt_link;
-        var http = new XMLHttpRequest();
-        http.open('HEAD', url, false);
-        http.setRequestHeader('Access-Control-Allow-Credentials', 'true');
-        http.setRequestHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
-        http.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-        http.send();
-        console.log(http.status);
-        if (http.status == 404) {
-            console.log("fail");
-            var warn = document.createElement("p");
-            warn.setAttribute("id", "warning-msg");
-            var node = document.createTextNode("incorrect link error");
-            warn.appendChild(node);
-            var elem = document.getElementById("mic");
-            elem.appendChild(warn);
-        } else {
-            console.log("success");
-            var elem = document.getElementById("warning-msg");
-            elem.parentNode.removeChild(elem);
-
-        }
-
-        
-    }
-    </script> -->
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 </body>
 
 </html>
