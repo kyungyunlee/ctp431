@@ -15,17 +15,17 @@
     <title></title>
 </head>
 <style>
-    iframe {
-        position:fixed;
+    #youtube-vid {
+        position:absolute;
         z-index:2;
-        left:2%;
-        bottom:2%;
+        left:1.5%;
+        bottom:1.5%;
     }
     #inputText{
         position:fixed;
         z-index: 2;
-        left:2%;
-        top:2%;
+        left:1.5%;
+        top:1.5%;
         width:100%;
     }
     #description{
@@ -75,16 +75,18 @@
             <p>This page features songs of the awesome band, vulfpeck.</p>
             <!-- <p>3 options for you</p> -->
             <div id="select-song"> </div>
-            <div id="mic">or <textarea id="youtube-link" rows="1" cols="40">paste youtube "EMBED" link</textarea>
+            <div id="mic">or <textarea id="youtube-link" rows="1" cols="40">paste youtube link</textarea>
             <button id="submit-link">submit</button> or </div>
         </div>
     </div>
-    <div id="canvasContainer"></div>
-    <div id="youtube-vid"></div>
+    <div id="canvasContainer">
+        <div id="youtube-vid"></div>
+    </div>
     <div id="reference">
         <p>comments, inspirations, tools and code</p>
         <ul>   
             <li>music have been clipped to <= 1 min just in case of copyright issues. It's only used for personal project :)</li>
+            <li>if you want to play from the youtube link, the sound input will be from the speaker and mic</li>
             <li>vulfpeck is an amazing band</li> 
             <li>visuals are very much inspired by Zach Lieberman's work <a href="http://www.ceros.com/originals/augmented-reality-apps/" target="_blank">on AR text</a></li>
             <li>programmed with <a href="http://p5js.org" target="_blank">p5.js</a> and my code can be found at <a href="http://github.com/kyungyunlee/ctp431" target="_blank">my github</a></li>
