@@ -3,15 +3,12 @@
 // 2. from local mp3
 // 3. from youtube/mic input 
 
-var audio;
-var currently_playing;
 // 1, from server mp3 
 var song;
 var button; // play mp3 song button
 var fft, amplitude, level;
-var mysongs = ['vulfpeck_birds_of_a_feather.mp3', 'vulfpeck_animalspirit.mp3','vulfpeck_deantown.mp3', 'vulfpeck_softparade.mp3'];
-// var mysongs = ['https://www.youtube.com/embed/qTUnDV3MgVQ']
-var sel; 
+var mysongs = ['vulfpeck_birds_of_a_feather.mp3', 'vulfpeck_animalspirit.mp3', 'vulfpeck_deantown.mp3', 'vulfpeck_softparade.mp3'];
+var sel;
 
 // 2. from local mp3
 var usersong;
@@ -29,25 +26,29 @@ var submitlink;
 var curr_link;
 var is_youtube_on = false;
 
-
 // text parameters
-var num_letters = 15;
+var default_display_letter = 8;
+var num_letters = 10;
 var myletters = [];
-var startingheight; 
+var startingheight;
+var color_list;
+var letter_colors = [];
+
 // textfield parameters 
 var textfield;
 var submit;
-var curr_word; 
+var curr_word;
 
-// energy level histories
-var bass_level_history = new Array(num_letters);
-var low_mid_level_history = new Array(num_letters);
-var mid_level_history = new Array(num_letters);
-var high_mid_level_history = new Array(num_letters);
-var treble_level_history = new Array(num_letters);
+// freq level histories
+var arraysForFreqLevel = [];
+var arraysForLetters = [];
+for (var i = 0; i < default_display_letter; i++) {
+    arraysForLetters.push(new Array(num_letters));
+    arraysForFreqLevel.push(0);
+}
 
-var bass_amp = 2.5;
-var energy_threshold=40;
+var bass_amp = 2.5; // amplifier for letter height
+var energy_threshold = 40;
 
 
 function preload() {
@@ -57,7 +58,7 @@ function preload() {
     sel = createSelect();
     sel.parent("select-song");
 
-    for (var s=0; s<mysongs.length;s++){
+    for (var s = 0; s < mysongs.length; s++) {
         sel.option(mysongs[s]);
     }
     // preload with default song
@@ -69,21 +70,19 @@ function preload() {
     button = createButton("play");
     button.mousePressed(togglePlaying);
     button.parent("select-song");
- }
+}
 
 
-function setup(){
+function setup() {
     var canv = createCanvas(windowWidth, windowHeight);
     canv.parent("canvasContainer");
-    // pixelDensity(1);
 
-    textAlign(CENTER,BASELINE);
+    textAlign(CENTER, BASELINE);
     rectMode(CORNERS);
 
     // input four letters
     textfield = select("#fourletters");
     curr_word = textfield.value();
-    console.log(curr_word);
     submit = select("#submit");
     submit.mousePressed(newText);
 
@@ -92,7 +91,6 @@ function setup(){
     amplitude = new p5.Amplitude();
     fft.setInput(song);
     amplitude.setInput(song);
-    //analyzer.smooth(0.9);
 
     // mic input && audio link
     mic = new p5.AudioIn();
@@ -114,154 +112,146 @@ function setup(){
     usersongButton = createButton("play");
     usersongButton.parent("user-mp3");
     usersongButton.mousePressed(toggleUserSongPlaying);
-    
 
-    // set base heights for four letters 
+
+    // set base heights for eight letters 
     startingheight = windowHeight - energy_threshold;
-    bass_level_history.fill(startingheight);
-    low_mid_level_history.fill(startingheight);
-    mid_level_history.fill(startingheight);
-    high_mid_level_history.fill(startingheight);
-    treble_level_history.fill(startingheight);
+    for (var i = 0; i < default_display_letter; i++) {
+        arraysForLetters[i].fill(startingheight);
+    }
+
+    // random colors for each letter
+    color_list = [color(249, 115, 117), color(254, 234, 110), color(104, 185, 252), color(204, 235, 140), color(142, 189, 109), color(78, 176, 167), color(250, 152, 66), color(191, 126, 181), color(171, 202, 206), color(183, 200, 41)];
+    for (var i = 0; i < default_display_letter; i++) {
+        letter_colors.push(random(color_list));
+    }
 }
 
 
-function draw(){
-    var spectrum = fft.analyze();
-    bass_level = fft.getEnergy('bass');
-    low_mid_level = fft.getEnergy('lowMid');
-    mid_level = fft.getEnergy('mid');
-    high_mid_level = fft.getEnergy('highMid');
-    treble_level = fft.getEnergy(2600, 14000); // high-mid + treble
-    
+function draw() {
     background(235, 202, 193);
+
+    // analyze frequency
+    var spectrum = fft.analyze();
+    // divide the frequency range into number of input letters
+    var freq_range = (log(14000) - log(20)) / curr_word.length;
+    for (var i = 0; i < curr_word.length; i++) {
+        var lower_freq = exp(log(20) + (freq_range * i));
+        var higher_freq = exp(log(20) + (freq_range * (i + 1)));
+        var freq_level = fft.getEnergy(lower_freq, higher_freq);
+        arraysForFreqLevel[i] = freq_level;
+    }
+
     // rectangle on the floor
-    push ();
+    push();
     noStroke();
-    fill (color(253, 239,231));
-    rect (0,0, windowWidth, windowHeight/4*3.5); // floor rectangle
-    pop ();
+    fill(color(253, 239, 231));
+    rect(0, 0, windowWidth, windowHeight / 4 * 3.5); // floor rectangle
+    pop();
 
     // remove if more than 20 histories accumulate
-    if (bass_level_history.length > num_letters){
-        bass_level_history.splice(0,1);
-    } 
-    if (low_mid_level_history.length>num_letters){
-        low_mid_level_history.splice(0,1);
-    }
-    if (mid_level_history.length>num_letters){
-        mid_level_history.splice(0,1);
-    }
-    if (high_mid_level_history.length>num_letters){
-        high_mid_level_history.splice(0,1);
-    }
-    if (treble_level_history.length>num_letters){
-        treble_level_history.splice(0,1);
-    }
-    
-    // threshold for the energy value 
-    if (bass_level > energy_threshold){ 
-        bass_level_history.push(bass_level);
-    } else {
-        bass_level_history.push(energy_threshold);
+    for (var i = 0; i < arraysForLetters.length; i++) {
+        if (arraysForLetters[i].length > num_letters) {
+            arraysForLetters[i].splice(0, 1);
+        }
     }
 
-    if (low_mid_level > energy_threshold){ 
-        low_mid_level_history.push(low_mid_level);
-    } else {
-        low_mid_level_history.push(energy_threshold);
+    // add the frequency level into the arraysForLetters(height of the letters)
+    for (var i = 0; i < arraysForFreqLevel.length; i++) {
+        if (arraysForFreqLevel[i] > energy_threshold) {
+            arraysForLetters[i].push(arraysForFreqLevel[i]);
+        } else {
+            arraysForLetters[i].push(energy_threshold);
+        }
     }
 
-    if (mid_level > energy_threshold){ 
-        mid_level_history.push(mid_level);
-    } else {
-        mid_level_history.push(energy_threshold);
-    }
-
-    if (high_mid_level > energy_threshold){ 
-        high_mid_level_history.push(high_mid_level);
-    } else {
-        high_mid_level_history.push(energy_threshold);
-    }
-
-    if (treble_level > energy_threshold){ 
-        treble_level_history.push(treble_level);
-    } else {
-        treble_level_history.push(energy_threshold);
-    }
-
-    
-    // four letter stuff
+    // letter stuff
     stroke(0);
     strokeWeight(4);
-    var base_fontsize = windowWidth/10;
-    var words = split(curr_word, '') ;
-    if (words.length != 4){
-        console.log("wrong input");
-        words = ['v', 'u', 'l', 'f'];
-    }
-    
-    var startingWidth = windowWidth/4;
-    var gap = base_fontsize *1.6 ;
-    var letter_colors = [color(249, 115 ,117), color(254,234,110), color(104, 185, 252), color(107, 253, 165)];
-    var xpos = [startingWidth, startingWidth+gap, startingWidth+gap*2, startingWidth+gap*3];
-    var ypos = [bass_level_history, low_mid_level_history, mid_level_history, treble_level_history];
+    var base_fontsize = windowWidth / (curr_word.length * 2.3);
+    var words = split(curr_word, '');
 
+    var startingWidth = windowWidth / 2 - (curr_word.length - 1) * ((windowWidth * 0.3) / (curr_word.length));
+    var gap = base_fontsize * 1.6;
+
+    var xpos = [];
+    var ypos = [];
+    for (var i = 0; i < curr_word.length; i++) {
+        xpos.push(startingWidth + gap * i);
+        ypos.push(arraysForLetters[i]);
+    }
     textFont("Arial Black");
-    for (var c=num_letters-1; c>=0;c--){
-        textSize(base_fontsize + (c*11));
-        for (var w=0; w<words.length;w++){
-            fill (letter_colors[w]);
-            var diff_h = map(ypos[w][num_letters-1-c], energy_threshold, 255, energy_threshold, windowHeight /4);
-            text (words[w], xpos[w], startingheight - diff_h*bass_amp);
+    for (var c = num_letters - 1; c >= 0; c--) {
+        textSize(base_fontsize + (c * 10));
+        for (var w = 0; w < words.length; w++) {
+            fill(letter_colors[w]);
+            var diff_h = map(ypos[w][num_letters - 1 - c], energy_threshold, 255, energy_threshold, windowHeight / 4);
+            text(words[w], xpos[w], startingheight - diff_h * bass_amp);
         }
-        translate(5,5);
+        translate(5, 5);
     }
 
     // frontmost text 
     textSize(base_fontsize);
-    for (var w=0; w<words.length;w++){
-        fill (letter_colors[w]);
-        var diff_h = map(ypos[w][num_letters-1], energy_threshold, 255, energy_threshold, windowHeight /4);
-        text (words[w], xpos[w], startingheight - diff_h*bass_amp);
+    for (var w = 0; w < words.length; w++) {
+        fill(letter_colors[w]);
+        var diff_h = map(ypos[w][num_letters - 1], energy_threshold, 255, energy_threshold, windowHeight / 4);
+        text(words[w], xpos[w], startingheight - diff_h * bass_amp);
     }
 
     // add frequency descriptions at the bottom
-    var freq_range = ['Bass: 20~140hz', 'Low-mid: 140~400hz', 'Mid: 400~2600hz', 'High: 2600hz~']
+    var ranges = [];
+    for (var i = 0; i < curr_word.length; i++) {
+        var lower_freq = int(exp(log(20) + (freq_range * i)));
+        var higher_freq = int(exp(log(20) + (freq_range * (i + 1))));
+        ranges.push(str(lower_freq) + '~' + str(higher_freq));
+    }
+
     textFont("Helvetica");
     noStroke();
-    textSize(13);
-    fill (color(0));
+    textSize(12);
+    fill(color(0));
     textAlign(LEFT, BASELINE);
-    // text ("put your mouse here for \nfrequency descriptions of each letter", 0 , windowHeight*0.84);
-    if (mouseY > windowHeight/4*3.5) {
-        for (var i=0;i<words.length;i++){
-            textSize(13)
-            text (freq_range[i],xpos[i], windowHeight*0.87);
+    if (mouseY > (windowHeight - energy_threshold) * 0.9) {
+        text("Frequency \n range(hz): ", xpos[0] - gap, windowHeight * 0.855);
+        for (var i = 0; i < words.length; i++) {
+            textSize(12)
+            text(ranges[i], xpos[i], windowHeight * 0.865);
         }
-    } 
-
+    }
 }
+
 
 /***** function for handling new four letter input *****/
-function newText(){
+function newText() {
     curr_word = textfield.value();
-    console.log(curr_word);
+    console.log(curr_word, curr_word.length);
+
+    // reset all the arrays with the new input word length 
+    arraysForLetters = [];
+    arraysForFreqLevel = [];
+    letter_colors = [];
+    for (var i = 0; i < curr_word.length; i++) {
+        arraysForLetters.push(new Array(num_letters));
+        arraysForFreqLevel.push(0);
+        letter_colors.push(random(color_list));
+    }
 }
 
+
 /***** function for handling new youtube link *****/
-function newlink(){
+function newlink() {
     if (is_youtube_on) {
         closeYoutube();
     }
     curr_link = youtubelink.value();
     // handle in case user inputs "watch" link instead of "/embed"
-    if (match(curr_link, "watch")){
-       var link_id = split(curr_link, "=")[1];
-       curr_link = "https://www.youtube.com/embed/" + link_id;
+    if (match(curr_link, "watch")) {
+        var link_id = split(curr_link, "=")[1];
+        curr_link = "https://www.youtube.com/embed/" + link_id;
     }
     console.log("curr link " + curr_link);
-    if (song.isPlaying()){
+    if (song.isPlaying()) {
         stopmp3();
     }
     // create iframe
@@ -269,40 +259,42 @@ function newlink(){
     iframe.parent("youtube-vid");
     iframe.attribute("id", "my-yt");
     iframe.attribute("src", curr_link);
-    iframe.attribute("width", 250);
-    iframe.attribute("height", 150);
+    iframe.attribute("width", 200);
+    iframe.attribute("height", 120);
     iframe.attribute("allow", "autoplay; encrypted-media");
     // iframe.attribute("onerror", "check_valid_yt()")
     startmic();
     is_youtube_on = true;
-    // check_valid_yt(curr_link);
 }
 
-function closeYoutube(){
+
+function closeYoutube() {
     iframe.remove();
     stopmic();
     is_youtube_on = false;
 }
 
+
 /***** functions for handling user's local mp3 file *****/
-function handleFile(file){
+function handleFile(file) {
     console.log(file);
     usersong = loadSound(file, successCallback, errorCallback, whileLoading);
     fft.setInput(usersong);
     amplitude.setInput(usersong);
 }
 
-function getUserFile(){
+
+function getUserFile() {
     is_user_song = true;
     usersongButton.html("loading..please wait")
 }
 
-/***** functions for handling and loading new sound file  *****/
 
-function mySelectEvent (){
-    if (song && song.isPlaying()){
+/***** functions for handling and loading new sound file  *****/
+function mySelectEvent() {
+    if (song && song.isPlaying()) {
         stopmp3();
-    } else if (usersong && usersong.isPlaying()){
+    } else if (usersong && usersong.isPlaying()) {
         stopUserMp3();
     }
     button.html("loading..please wait")
@@ -315,52 +307,58 @@ function mySelectEvent (){
 }
 
 
-function successCallback(){
-    if (is_user_song) { 
+function successCallback() {
+    if (is_user_song) {
         usersongButton.html("play!");
-    } else { 
+    } else {
         button.html("play!");
     }
     console.log("loaded");
 }
 
-function errorCallback(){}
+
+function errorCallback() {}
 
 
-function whileLoading(total){
+function whileLoading(total) {
     console.log(total);
-    button.html("loading.." + nf(total*100,2,0)+"%");
+    button.html("loading.." + nf(total * 100, 2, 0) + "%");
 
 }
 
 
 /*****  Play,stop functions for mp3 and mic  ****/
-function stopmp3(){
+function stopmp3() {
     song.stop();
     console.log("Song stopped");
     button.html("play!");
 
-
+    /*
     var currentAudioTitle = select("#currentAudioTitle");
     currentAudioTitle.remove();
+    */
 
 }
 
-function playmp3(){
+
+function playmp3() {
     fft.setInput(song);
     amplitude.setInput(song);
 
     song.play();
     console.log("Song playing " + song.url);
     button.html("pause");
-    
+
+    /*
     var currentAudioTitle = createP(song.url);
     currentAudioTitle.attribute("id", "currentAudioTitle");
     var placeholder = select("#current-audio-file");
     currentAudioTitle.parent(placeholder);
+    */
 }
 
-function playUserMp3(){
+
+function playUserMp3() {
     fft.setInput(usersong);
     amplitude.setInput(usersong);
 
@@ -370,19 +368,23 @@ function playUserMp3(){
 
     is_user_song = true;
 
+    /*
     var currentAudioTitle = createP(usersong.url);
     var placeholder = select("#current-audio-file");
     currentAudioTitle.parent(placeholder);
+    */
 }
 
-function stopUserMp3(){
+
+function stopUserMp3() {
     usersong.stop();
     console.log("User Song stopped");
     usersongButton.html("play!");
     is_user_song = false;
 }
 
-function startmic(){
+
+function startmic() {
     fft.setInput(mic);
     amplitude.setInput(mic);
 
@@ -392,38 +394,69 @@ function startmic(){
     is_mic_on = true;
 }
 
-function stopmic(){
+
+function stopmic() {
     mic.stop();
     console.log("mic off");
     micbutton.html("mic on");
     is_mic_on = false;
 }
 
-function togglePlaying(){
+
+function togglePlaying() {
     // turn off youtube, mic if they were on 
-    if (is_youtube_on){ closeYoutube(); }
-    if (is_mic_on){ stopmic();}
-    if (usersong && usersong.isPlaying()) { stopUserMp3(); }
-    
-    if (song.isPlaying()){ stopmp3(); } 
-    else { playmp3(); }
+    if (is_youtube_on) {
+        closeYoutube();
+    }
+    if (is_mic_on) {
+        stopmic();
+    }
+    if (usersong && usersong.isPlaying()) {
+        stopUserMp3();
+    }
+
+    if (song.isPlaying()) {
+        stopmp3();
+    } else {
+        playmp3();
+    }
 }
 
-function toggleUserSongPlaying(){
-    if (is_youtube_on) { closeYoutube(); }
-    if (is_mic_on) { stopmic(); }
-    if (song.isPlaying()) { stopmp3(); }
 
-    if (usersong.isPlaying()) { stopUserMp3(); }
-    else { playUserMp3(); }
+function toggleUserSongPlaying() {
+    if (is_youtube_on) {
+        closeYoutube();
+    }
+    if (is_mic_on) {
+        stopmic();
+    }
+    if (song.isPlaying()) {
+        stopmp3();
+    }
+
+    if (usersong.isPlaying()) {
+        stopUserMp3();
+    } else {
+        playUserMp3();
+    }
 }
 
-function micTogglePlaying(){
+
+function micTogglePlaying() {
     // turn of youtube, mp3 if they were on
-    if (song.isPlaying()){ stopmp3();}
-    if (usersong && usersong.isPlaying()) { stopUserMp3(); }
-    if (is_youtube_on){ closeYoutube(); } 
+    if (song.isPlaying()) {
+        stopmp3();
+    }
+    if (usersong && usersong.isPlaying()) {
+        stopUserMp3();
+    }
+    if (is_youtube_on) {
+        closeYoutube();
+    }
 
-    if (is_mic_on){ stopmic();} 
-    else { startmic(); }
+    if (is_mic_on) {
+        stopmic();
+    } else {
+        startmic();
+    }
 }

@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script language="javascript" type="text/javascript" src="p5.sound.js"></script>
@@ -16,6 +17,12 @@
 </head>
 <style>
     #youtube-vid {
+        position:absolute;
+        z-index:2;
+        left:1.5%;
+        bottom:1.5%;
+    }
+    #scroll-down {
         position:absolute;
         z-index:2;
         left:1.5%;
@@ -37,7 +44,7 @@
         border-bottom: 4px solid black;
         box-shadow:none;
         background-color:rgb(253, 239,231);
-        font-size:3em;
+        font-size:2em;
     }
     textarea#youtube-link {
         border-radius:0;
@@ -63,68 +70,93 @@
     #reference {
         margin-left:2%;
     }
+    
+    .modal {
+        width:50%;
+    }
 
     .modal-backdrop {
         z-index: 0;
-        background-color: transparent;
+        background-color: rgb(0,0,0,5);
+    }
+
+    .modal-header {
+       padding:0;
+       padding-left:2%;
+       padding-right:2%;
+    }
+
+    .modal-body div {
+        margin:1%;
+    }
+    
+    .modal-footer {
+        padding:0;
     }
 </style>
 
 <body>
     <div id="inputText">
         <div id="left-column">
-            <textarea id="fourletters" rows="1" cols="8" maxlength="4">vulf</textarea>
-            <p id="description">write 4 letters and <button id="submit">display</button></p>
+            <textarea id="fourletters" rows="1" cols="10" maxlength="10">vulfpeck</textarea>
+            <p id="description">write up to 10 letters and <button id="submit" type="button" class="btn btn-sm btn-outline-dark">display</button></p>
 
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#menuModal">Select Audio here!</button>
+            <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#menuModal">Select
+                Audio here!</button>
             <div id="current-audio-file"></div>
             <div class="modal" id="menuModal" tabindex="-1" role="dialog" aria-labelledby="menuLabel" aria-hidden="true">
                 <div class="model-dialog" role="document">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="menuLabel">Choose an audio input</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="select-song">1. Vulfpeck samples: </div>
-                    <div id="user-mp3">or 2. </div>
-                    <div id="youtube-input">or 3. <textarea id="youtube-link" rows="1" cols="40">Paste youtube link</textarea>
-                    <button id="submit-link">submit</button> </div>
-                    <div id="mic">or 4. </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-                </div>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title" id="menuLabel">Choose one audio option</h6>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="select-song">1. Vulfpeck samples: </div>
+                            <div id="user-mp3">or 2. </div>
+                            <div id="youtube-input">or 3. <textarea id="youtube-link" rows="1" cols="40">Paste youtube link</textarea>
+                                <button id="submit-link">submit</button> </div>
+                            <div id="mic">or 4. </div>
+                        </div>
+                        <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                </div> -->
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="right-column">
-            <p>This page features songs of the awesome band, vulfpeck.</p>
+            <p>Featuring songs of the awesome band, vulfpeck.</p>
         </div>
     </div>
     <div id="canvasContainer">
         <div id="youtube-vid"></div>
+        <div id="scroll-down">&darr; scroll down for info</div>
     </div>
     <div id="reference">
-        <p>comments, inspirations, tools and code</p>
-        <ul>   
-            <li>music have been clipped to <= 1 min just in case of copyright issues. It's only used for personal project :)</li>
-            <li>if you want to play from the youtube link, the sound input will be from the speaker and mic</li>
-            <li>vulfpeck is an amazing band</li> 
-            <li>visuals are very much inspired by Zach Lieberman's work <a href="http://www.ceros.com/originals/augmented-reality-apps/" target="_blank">on AR text</a></li>
-            <li>programmed with <a href="http://p5js.org" target="_blank">p5.js</a> and my code can be found at <a href="http://github.com/kyungyunlee/ctp431" target="_blank">my github</a></li>
+        <p>Comments, inspirations, tools and code</p>
+        <ul>
+            <li>Music have been clipped to <= 1 min just in case of copyright issues. It's only used for personal
+                    project :)</li> <li>If you want to play from the youtube link, the sound input will be from the
+                    speaker and mic</li>
+            <li>Why vulfpeck? cuz they are amazing</li>
+            <li>Visuals are very much inspired by Zach Lieberman's work <a href="http://www.instagram.com/p/BkpnnuMg3Bi/?taken-by=zach.lieberman"
+                    target="_blank">on AR text</a></li>
+            <li>Programmed with <a href="http://p5js.org" target="_blank">p5.js</a> and my code can be found at <a href="http://github.com/kyungyunlee/ctp431"
+                    target="_blank">my github</a></li>
         </ul>
     </div>
 
 
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
-
