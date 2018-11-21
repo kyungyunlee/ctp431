@@ -1,5 +1,6 @@
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
+// var context = new (window.AudioContext || window.webkitAudioContext)();
 
 // resonant filter variables 
 var filter_onoff = false;
@@ -42,7 +43,7 @@ TR808Tone1.prototype.setup = function() {
 
 	// lowpass filter 
 	var noiseFilter = this.context.createBiquadFilter();
-	console.log(noiseFilter);
+	// console.log(noiseFilter);
 	noiseFilter.type = 'lowpass';
 	noiseFilter.frequency.value = filter_freq;
 	noiseFilter.Q.value = filter_q;
@@ -121,12 +122,48 @@ TR808Tone2.prototype.setup = function() {
 	// noiseFilter.Q.value = 1;
 	noiseFilter.frequency.value = filter_freq;
 	noiseFilter.Q.value = filter_q;
+
+	// distortion
+	var distortion = this.context.createWaveShaper();
+	distortion.curve = makeDistortionCurve(400);
+	// console.log(distortion.curve);
+	distortion.oversampe = '4x';
+
+	// convolver 
+	// var convolver = this.context.createConvolver();
+
+	// var soundSource;
+
+	// var ajaxRequest = new XMLHttpRequest();
+
+	// ajaxRequest.open('GET', 'http://mdn.github.io/voice-change-o-matic/audio/concert-crowd.ogg', true);
+
+	// ajaxRequest.responseType = 'arraybuffer';
+
+	// ajaxRequest.onload = function() {
+	// 	var audioData = ajaxRequest.response;
+	// 	context.decodeAudioData(audioData, function(buffer) {
+	// 		soundSource = context.createBufferSource();
+	// 		convolver.buffer = buffer;
+	// 	  }, function(e){ console.log("Error with decoding audio data" + e.err);});
+	  
+	// 	//soundSource.connect(audioCtx.destination);
+	// 	//soundSource.loop = true;
+	// 	//soundSource.start();
+	//   };
+	  
+	//   ajaxRequest.send();
+
 	
 	// amp envelop
 	this.noiseEnvelope = this.context.createGain();
 
 	if (filter_onoff) {  
 		this.noise.connect(noiseFilter);
+		noiseFilter.connect(distortion);
+		// distortion.connect(convolver);
+		// convolver.connect(this.noiseEnvelope);
+		distortion.connect(this.noiseEnvelope);
 		noiseFilter.connect(this.noiseEnvelope);
 	} else {
 		this.noise.connect(this.noiseEnvelope);
@@ -142,6 +179,21 @@ TR808Tone2.prototype.trigger = function(time) {
 	this.noise.start(time)
 	this.noise.stop(time + this.amp_decaytime);
 };
+
+
+function makeDistortionCurve(amount) {
+	var k = typeof amount === 'number' ? amount : 50,
+	  n_samples = 44100,
+	  curve = new Float32Array(n_samples),
+	  deg = Math.PI / 180,
+	  i = 0,
+	  x;
+	for ( ; i < n_samples; ++i ) {
+	  x = i * 2 / n_samples - 1;
+	  curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+	}
+	return curve;
+  };
 
 function keyboardDown(key) {
 
