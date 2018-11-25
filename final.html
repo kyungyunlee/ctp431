@@ -1,10 +1,133 @@
 <html>
   <head>
-    <!-- Load @magenta/music -->
-    <script src="https://cdn.jsdelivr.net/npm/@magenta/music@1.2"></script>
+    <title> Final Project: Github sounds  </title>
+    <script type="text/javascript" src="assets/project3/NexusUI.js"></script>
+    <script type="text/javascript" src="assets/project4/Tone.js"></script>
+    <script type="text/javascript" src="assets/project4/Interface.js"></script>
+    <script type="text/javascript" src="assets/project4/draggabilly.js"></script>
+    <script type="text/javascript" src="assets/project4/final.js"></script>
+    <link  href='assets/project4/hw4.css' rel='stylesheet'>
   </head>
-  <body><canvas id="canvas" width="640" height="480"></canvas>
-
-    <script src="assets/project4/final.js"></script>
+  <body></canvas>
+    <div id="sequencer"></div>
+    
+    <div><p id="play_button"></p></div>
+    
   </body>
+
+
+  <script>
+    var num_contribs;
+    var binary_contribs;
+
+    // retrieve and parse your github contribution data
+    function parse_my_contributions(res, callback){
+      var today = new Date();
+      var dd = today.getDate();
+      var mm = today.getMonth() + 1;
+      var yyyy = today.getFullYear();
+      var day = today.getDay();
+      var today_date = yyyy + '-' + mm + '-' + dd;
+
+      var total_days_to_retrieve = 371 - (7-day);
+
+      console.log(res);
+      var contribs;
+      res = JSON.parse(res)
+      for (var i=0; i < res["contributions"].length; i++) {
+        if ((res["contributions"][i]["date"]) == today_date) {
+            console.log(res["contributions"][i]);
+            contribs = res["contributions"].slice(i , i+total_days_to_retrieve);
+            console.log(contribs.length);
+            break
+        }
+      }
+      console.log(today_date, day);
+
+
+      // fill in your contribution into the sequencer
+      num_contribs = new Array(7).fill(0).map(() => new Array(53).fill(0));
+      binary_contribs = new Array(7).fill(0).map(() => new Array(53).fill(0));
+      var curr_cell_row = day;
+      var curr_cell_col = 52;
+      for (var i=0; i < total_days_to_retrieve; i++){
+        // console.log(contribs[i]["count"])
+        num_contribs[curr_cell_row][curr_cell_col] = contribs[i]["count"];
+        if (contribs[i]["count"] > 0){
+          binary_contribs[curr_cell_row][curr_cell_col] = 1;
+        } else {
+          binary_contribs[curr_cell_row][curr_cell_col] = 0;
+        }
+
+        if (curr_cell_row == 0) { 
+          curr_cell_row =  6;
+          curr_cell_col = curr_cell_col -1;
+        } else { 
+          curr_cell_row = curr_cell_row - 1;
+        }
+      }
+      console.log(num_contribs);
+
+      console.log("Success");
+      callback();
+    }
+
+    function httpGetAsync(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText, init_sequencer);
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+        xmlHttp.send(null);
+    }
+    var url = 'https://github-contributions-api.now.sh/v1/kyungyunlee';
+    httpGetAsync(url, parse_my_contributions);
+
+
+
+
+    ////// GUI ////////
+    var sequencer = new Nexus.Sequencer('#sequencer',{
+    'size': [window.innerWidth * 0.8, window.innerHeight* 0.1],
+    'mode': 'toggle',
+    'rows': 7,
+    'columns': 53
+    })
+    
+    function init_sequencer() {
+      sequencer.matrix.set.all(binary_contribs);
+    }
+
+
+    var play_button = new Nexus.TextButton('#play_button',{
+      'size': [150,50],
+      'state': false,
+      'text': 'Play',
+      'alternate': false,
+      'alternateText': 'Stop'
+    })
+
+
+
+    // play button on/off 
+    play_button.on('change',function(v) {
+    if (v == 1) {
+      sequencer.start();
+      sequencer.interval.ms(60000/150);
+      console.log(sequencer.matrix.pattern);
+    }
+    else {
+      sequencer.stop();
+    }
+  })
+
+
+
+
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+crossorigin="anonymous"></script> 
 </html>
