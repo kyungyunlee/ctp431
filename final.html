@@ -8,10 +8,19 @@
     <script type="text/javascript" src="assets/project4/final.js"></script>
     <link  href='assets/project4/hw4.css' rel='stylesheet'>
   </head>
-  <body></canvas>
+  <body>
+    <h1>git commit -m "make music"</h1> <!-- musical commits -->
+    <div id="userform">
+      <form id="userform" action="">
+        Github Username <input type="text" name="github_username" id="username">
+        <input type="button" onclick="submit_username()" value="Submit">
+      </form>
+    </div>
+    
     <div id="sequencer"></div>
     
     <div><p id="play_button"></p></div>
+    <!-- <div><p id="christmas_button"></p></div> -->
     
   </body>
 
@@ -69,37 +78,45 @@
       console.log(num_contribs);
 
       console.log("Success");
-      callback();
+      callback(); // now fill in the sequencer with the data!! 
     }
 
+
+    // API for getting github data
     function httpGetAsync(theUrl, callback)
     {
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.onreadystatechange = function() { 
-            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
                 callback(xmlHttp.responseText, init_sequencer);
+            }
+           
         }
         xmlHttp.open("GET", theUrl, true); // true for asynchronous 
         xmlHttp.send(null);
     }
-    var url = 'https://github-contributions-api.now.sh/v1/kyungyunlee';
-    httpGetAsync(url, parse_my_contributions);
 
+    function submit_username() { 
+      var username = document.getElementById("username").value;
+      console.log("recieved", username);
+      var url = 'https://github-contributions-api.now.sh/v1/' + username;
+      httpGetAsync(url, parse_my_contributions);
+    }
 
 
 
     ////// GUI ////////
     var sequencer = new Nexus.Sequencer('#sequencer',{
-    'size': [window.innerWidth * 0.8, window.innerHeight* 0.1],
+    'size': [window.innerWidth * 0.9, window.innerHeight* 0.25],
     'mode': 'toggle',
     'rows': 7,
     'columns': 53
     })
     
+    // fill in the sequencer with your github contribution data
     function init_sequencer() {
       sequencer.matrix.set.all(binary_contribs);
     }
-
 
     var play_button = new Nexus.TextButton('#play_button',{
       'size': [150,50],
@@ -109,6 +126,13 @@
       'alternateText': 'Stop'
     })
 
+    //  var christmas_button = new Nexus.TextButton('#christmas_button',{
+    //   'size': [150,50],
+    //   'state': false,
+    //   'text': 'Christmas theme',
+    //   'alternate': false,
+    //   'alternateText': 'Stop'
+    // })
 
 
     // play button on/off 
@@ -121,6 +145,11 @@
     else {
       sequencer.stop();
     }
+  })
+
+
+  sequencer.on('step', function(v){
+    play_notes(v);
   })
 
 
