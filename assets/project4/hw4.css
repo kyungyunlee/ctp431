@@ -1,0 +1,23 @@
+body{
+    padding:2%;
+}
+h1 {
+    text-align: center;
+    margin:auto;
+    width:50%;
+    padding:2%;
+}
+div#userform {
+    text-align: center;
+    margin:auto;
+    width:50%;
+}
+#sequencer {
+    margin:auto;
+    width:50%;
+    padding:1%;
+}
+#play_button {
+    margin:auto;
+    width:50%;
+}
