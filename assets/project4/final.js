@@ -132,14 +132,27 @@ const XYLOPHONE = [xylophone, xylophone, xylophone, xylophone, xylophone, xyloph
 const CHOIR = [human_voice, human_voice, human_voice, human_voice, human_voice, human_voice, human_voice];
 
 
+const GREEN =  ['rgb(198, 227, 143)', 'rgb(126, 199, 115)', 'rgb(42,153,64)', 'rgb(29, 96, 41)'];
+const PINK = [];
+const REDYELLOW = [ 'rgb(222,215,0)', 'rgb(233,124,0)', 'rgb(216, 46, 8)', 'rgb(216, 46, 8)'];
+const REDGREEN = ['rgb(225,32,44)', 'rgb(23, 160,81)', 'rgb(207,44,45)', 'rgb(33,146,76)'];
+
+// GLOBAL VARIABLES TO CHANGE OVERALL SETTINGS 
 var synthPart;
 var current_progression = basic_progression();
 var current_instrument_set = PIANO;
+var current_colors = GREEN;
 
 // USER SETTING INST AND CHORDS 
 function set_piano() { 
   console.log("setting inst to piano");
+
+  if (current_instrument_set == TR808) {
+    current_progression = basic_progression();
+  }
   current_instrument_set = PIANO;
+  current_colors = GREEN;
+  colorSequencer();
 }
 
 function set_percussion(){
@@ -148,21 +161,32 @@ function set_percussion(){
   var noChord = ["E3", "E3", "E3", "E3", "E3", "E3", "E3"];
   var progression = [];
   for (var i=0; i<53; i++) {
-    // var rand_chord_idx = Math.floor(Math.random() * CHORDS.length);
-    // rand_chord_idx = i % CHORDS.length;
     progression.push(noChord);
   }
   current_progression = progression ;
-  // resetChords(binary_contribs);
+
+  current_colors = REDYELLOW;
+  colorSequencer();
 }
 
 function set_flute(){
   console.log("setting inst to flute");
+  if (current_instrument_set == TR808) {
+    current_progression = basic_progression();
+  }
   current_instrument_set = FLUTE;
+  current_colors = GREEN;
+  colorSequencer();
 }
 
 function set_xylophone(){
+
+  if (current_instrument_set == TR808) {
+    current_progression = basic_progression();
+  }
   current_instrument_set = XYLOPHONE;
+  current_colors = GREEN;
+  colorSequencer();
 }
 
 function set_cmajor() { 
@@ -188,20 +212,24 @@ function set_christmas(){
   }
 
   current_progression = progression;
+  current_colors = REDGREEN;
+  colorSequencer();
   // resetChords(binary_contribs);
 }
 
+
+//---------------------------------------------------------------------------------------------//
 
 const arrayColumn = (arr, n) => arr.map(x => x[n]);
 
 // var chords_to_play = []; // contain chord progressions (53 in total)
 
-function githubCommitProcessor(binaryContrib){
+function githubCommitProcessor(binaryContrib, numContrib){
   // Called once when new user name is received
   console.log("binary contribution matrix", binaryContrib.length, binaryContrib[0].length);
 
   // UPDATE SEQUENCER WITH MY DATA ! 
-  colorSequencer(binaryContrib);
+  colorSequencer();
 
   make_play_button();
 }
@@ -223,7 +251,7 @@ function make_play_button(){
       playbutton.isPlaying = false;
       playbutton.innerHTML = "play";
       synthPart.stop(); 
-      colorSequencer(binary_contribs); // undo coloring
+      colorSequencer(); // undo coloring
     }
   })
 
@@ -272,7 +300,7 @@ function playAll() {
         console.log(idx, time);
         current_col = arrayColumn(rects, idx);
         for (var i=0; i<7; i++) {
-            rects[i][idx].stroke = 'rgb(150,150,150)';
+            rects[i][idx].stroke = 'rgb(210,210,210)';
             rects[i][idx].linewidth = 2;
         }
         two.update();
@@ -286,13 +314,11 @@ function playAll() {
   synthPart.loop = false;
 //   // synthPart.humanize = true;
 
-  Tone.Transport.bpm.value = 80;
+  // Tone.Transport.bpm.value = current_bpm;
   Tone.Transport.swing=  0.2;
   Tone.Transport.swingSubdivision = '16n';
   Tone.Transport.start("+01");
 }
-
-
 
 
 
@@ -348,7 +374,7 @@ function parse_my_contributions(res, callback){
   }
   console.log("Success");
   // Now call the gitCommitProcessor to update sequencer UI and make chord progression
-  githubCommitProcessor(binary_contribs);
+  githubCommitProcessor(binary_contribs, num_contribs);
 }
 
 
@@ -385,7 +411,7 @@ window.onload = function () {
   elem = document.getElementById("sequencer");
   var params = { width: 1000, height:150 };
   two = new Two(params).appendTo(elem);
-  var rect_size = 10;
+  var rect_size = 13;
   var gap_size = 3;
 
 // two has convenience methods to create shapes.
@@ -401,14 +427,29 @@ for (var i = 0; i<7; i++){
   rects.push(row);
 }
   two.update();
+
+
+/// BPM slider 
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+// output.innerHTML = slider.value; // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function() {
+    Tone.Transport.bpm.value = this.value;
 }
 
-function colorSequencer(binaryContrib) {
-  console.log(binaryContrib);
-  for (var i=0; i < binaryContrib.length; i++ ) { // 7 
-    for (var j=0; j <binaryContrib[i].length; j++ ){ // 53
-        if (binaryContrib[i][j] == 1 ){
-          rects[i][j].fill = 'rgb(0,240, 230)';
+}
+
+function colorSequencer() {
+  // console.log(binaryContrib);
+  for (var i=0; i < binary_contribs.length; i++ ) { // 7 
+    for (var j=0; j <binary_contribs[i].length; j++ ){ // 53
+        if (binary_contribs[i][j] == 1 ){
+          if (num_contribs[i][j] == 1 ) { rects[i][j].fill = current_colors[0];}
+          else if (num_contribs[i][j] <3 ) {rects[i][j].fill = current_colors[1];}
+          else if (num_contribs[i][j] <7 ) {rects[i][j].fill = current_colors[2];}
+          else { rects[i][j].fill = current_colors[3];}
         }
         rects[i][j].noStroke();
     }

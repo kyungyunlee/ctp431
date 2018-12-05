@@ -10,12 +10,14 @@
     <script type="text/javascript" src="assets/project4/final.js"></script>
     <!-- <script data-main="app" src="assets/project4/lib/require.js"></script> -->
     <link  href='assets/project4/hw4.css' rel='stylesheet'>
+
+
   </head>
   <body>
     <h1>git commit -m "make some noise"</h1> <!-- musical commits -->
     <div id="userform">
       <form id="userform" action="">
-        Github Username <input type="text" name="github_username" id="username">
+        Enter Github Username <input type="text" name="github_username" id="username">
         <input type="button" onclick="submit_username()" value="Submit">
       </form>
     </div>
@@ -23,21 +25,34 @@
     <div id="sequencer" ></div>
     
     <!-- <div><p id="play_button"></p></div> -->
-    <button class="btn" id="play_button">wait</button>
+    <button class="btn" id="play_button">Waiting for you to enter username</button>
     <div id="current_chord"></div>
-    <div id="chord_buttons">
-      <button class="btn" id="c_maj" onclick="set_cmajor()">C major</button>
-      <button class="btn" id="minor_pentatonic">G minor pentatonic</button>
-    </div>
-    <div id="inst_buttons">
-      <button class="btn" id="piano" onclick="set_piano()">piano</button>
-      <button class="btn" id="flute" onclick="set_flute()">flute</button>
-      <button class="btn" id="xylophone" onclick="set_xylophone()">xylophone</button>
-      <button class="btn" id="tr808" onclick="set_percussion()">TR808</button>
 
-    </div>
-    <div id="theme_buttons">
-      <button class="btn" id="christmas" onclick="set_christmas()">christmas</button>
+    <div id="controllers" > 
+      <div class="slidecontainer">
+        BPM<input type="range" min="40" max="200" value="80" class="slider" id="myRange">
+      </div>
+
+      <div class="row" id="chord_inst">
+        <div class="column" id="chord_buttons">
+        <p>Choose a chord progression</p>
+          <button class="btn" id="c_maj" onclick="set_cmajor()">C major</button>
+          <button class="btn" id="minor_pentatonic">G minor pentatonic</button>
+        </div>
+
+        <div class="column" id="inst_buttons">
+        <p>Choose an instrument</p>
+          <button class="btn" id="piano" onclick="set_piano()">piano</button>
+          <button class="btn" id="flute" onclick="set_flute()">flute</button>
+          <button class="btn" id="xylophone" onclick="set_xylophone()">xylophone</button>
+          <button class="btn" id="tr808" onclick="set_percussion()">TR808</button>
+
+        </div>
+      </div>
+      <p>Or go with a theme</p>
+      <div id="theme_buttons">
+        <button class="btn" id="christmas" onclick="set_christmas()">christmas</button>
+      </div>
     </div>
 
     <!-- <div><p id="christmas_button"></p></div> -->
@@ -45,55 +60,6 @@
   </body>
 
 <script> 
-
-
-
-
-
-
-// var sequencer = new Nexus.Sequencer(document.getElementById('sequencer'),{
-// // 'size': [window.innerWidth * 0.8, window.innerHeight* 0.25],
-// 'size' : [1000, 120],
-// 'mode': 'toggle',
-// 'rows': 7,
-// 'columns': 53
-// })
-
-// // fill in the sequencer with your github contribution data
-// function init_sequencer() {
-//   sequencer.matrix.set.all(binary_contribs);
-// }
-
-// function make_play_button () {
-//   var play_button = new Nexus.TextButton(document.getElementById('play_button'),{
-//     'size': [150,50],
-//     'state': false,
-//     'text': 'Play',
-//     'alternate': false,
-//     'alternateText': 'Stop'
-//   })
-
-
-//   // play button on/off 
-//   play_button.on('change',function(v) {
-//   if (v == 1) {
-//     sequencer.start();
-//     sequencer.interval.ms(60000/150);
-//     // console.log(sequencer.matrix.pattern);
-//   }
-//   else {
-//     sequencer.stop();
-//   }
-//   })
-
-//   sequencer.on('step', function(v){
-//     // play_notes(v)
-//     playAll(chords_to_play);
-//   })
-
-
-
-// }
 
 
 
