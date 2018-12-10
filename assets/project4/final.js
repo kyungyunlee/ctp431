@@ -1,5 +1,6 @@
-var C = ["G4", "E4", "C4", "C1", "G0", "E0","C0"];
+var C = ["G4", "E4", "C4", "G3", "E3", "C3","G4"];
 var C7 = ["Bb4", "G4", "E4", "C4", "G3", "E3", "C3"];
+var D7 = ["D4", "F#4", "A4", "C4", "D3", "F#3", "A3"];
 var Dm7 = ["F4", "D4", "C4", "A3", "F3", "C3", "D3"];
 var F = ["F2", "C4", "A4", "F4", "C3", "A3", "F3"];
 var Fm = ["F5", "C4", "Ab4", "F4", "C3", "Ab3", "F3"];
@@ -47,11 +48,12 @@ function basic_progression(){
     progression.push(basic_chords[rand_chord_idx]);
   }
   return progression;
-
 }
 
 //--------------------------- INSTRUMENTS -----------------------------------------------// 
 var synth = new Tone.PolySynth(7, Tone.Synth).toMaster();
+
+var reverb = new Tone.Reverb({delay:0.01,}).toMaster();
 // synth.set("detune", -1200);
 
 var kick =  new Tone.Player({
@@ -85,8 +87,10 @@ var  cymbol =  new Tone.Player({
     url: 'assets/project4/tonejs-instruments/samples/drumset/HT00.WAV'
 
   }).toMaster()
-
-  
+ 
+  var lowconga =  new Tone.Player({
+    url: 'assets/project4/tonejs-instruments/samples/drumset/LC10.WAV',
+}).toMaster()
 
 var piano = SampleLibrary.load({
   instruments:"piano",
@@ -94,8 +98,7 @@ var piano = SampleLibrary.load({
 
 var flute = SampleLibrary.load({
   instruments:"flute",
-}
-).toMaster();
+}).toMaster();
 
 var saxophone = SampleLibrary.load({
   instruments:"saxophone",
@@ -112,15 +115,32 @@ var xylophone = SampleLibrary.load({
 
 var human_voice = new Tone.Sampler({
   'C4' :'assets/project4/tonejs-instruments/samples/Alesis-Sanctuary-QCard-Choir-Aah-C4.wav'
-},
-{"fadeOut" : "64n" }
+}, {"fadeOut" : "64n" }).connect(reverb);
 
-).toMaster();
+var bell = new Tone.MetalSynth({
+  "harmonicity" : 12,
+  "resonance" : 800,
+  "modulationIndex" : 20,
+  "envelope" : {
+    "decay" : 2,
+  },
+  "volume" : -20
+}).toMaster();
+
+var conga = new Tone.MembraneSynth({
+  "pitchDecay" : 0.008,
+  "octaves" : 2,
+  "envelope" : {
+    "attack" : 0.0006,
+    "decay" : 0.5,
+    "sustain" : 0
+  }
+}).toMaster();
 
 
 //---------------------------------------------------------------------------------------------// 
 // Instrument pre-set 
-const TR808 = [kick, lowtom, midtom, snare, closed_hihat, hitom, cymbol]; 
+const TR808 = [kick, lowtom, midtom, snare, closed_hihat, hitom, kick]; 
 // const JAZZ_INST = [kick, contrabass, contrabass, contrabass, saxophone, saxophone, saxophone];
 const PIANO = [piano, piano, piano, piano, piano, piano, piano];
 const GUITAR = [guitar_electric, guitar_electric, guitar_electric, guitar_electric, guitar_electric, guitar_electric, guitar_electric];
@@ -130,24 +150,34 @@ const FLUTE = [flute, flute, flute,flute, flute, flute, flute];
 const XYLOPHONE = [xylophone, xylophone, xylophone, xylophone, xylophone, xylophone, xylophone];
 // const CHRISTMAS = [];
 const CHOIR = [human_voice, human_voice, human_voice, human_voice, human_voice, human_voice, human_voice];
+// const CHRISTMAS_INST = [bell, bell, bell, bell, bell, bell, bell];
+const CHRISTMAS_INST = [xylophone, xylophone, xylophone, xylophone, xylophone, xylophone, xylophone];
+const HORROR = [conga, conga, conga, bell, conga, bell, conga];
+
+
 
 
 const GREEN =  ['rgb(198, 227, 143)', 'rgb(126, 199, 115)', 'rgb(42,153,64)', 'rgb(29, 96, 41)'];
-const PINK = [];
 const REDYELLOW = [ 'rgb(222,215,0)', 'rgb(233,124,0)', 'rgb(216, 46, 8)', 'rgb(216, 46, 8)'];
 const REDGREEN = ['rgb(225,32,44)', 'rgb(23, 160,81)', 'rgb(207,44,45)', 'rgb(33,146,76)'];
+const ORANGEBLACK = ['rgb(253,153,39)', 'rgb(50,50,50)','rgb(252,78,30)', 'rgb(5,5,5)'];
+const PURPLEBLUE = ['rgb(167,54,168)', 'rgb(86,185,203)','rgb(68,121,168)' ,'rgb(250,80,62)'];
+// const PURPLEBLUE = ['rgb(73, 172,182)','rgb(197, 71,96)','rgb(62, 167, 182)','rgb(199,73,96)']
+
 
 // GLOBAL VARIABLES TO CHANGE OVERALL SETTINGS 
 var synthPart;
 var current_progression = basic_progression();
 var current_instrument_set = PIANO;
 var current_colors = GREEN;
+var current_bpm;
 
 // USER SETTING INST AND CHORDS 
 function set_piano() { 
+  change_bg_color("default");
   console.log("setting inst to piano");
 
-  if (current_instrument_set == TR808) {
+  if (current_instrument_set == TR808 || current_instrument_set == HORROR || current_instrument_set == CHRISTMAS_INST) {
     current_progression = basic_progression();
   }
   current_instrument_set = PIANO;
@@ -155,10 +185,49 @@ function set_piano() {
   colorSequencer();
 }
 
+function change_bg_color (type) {
+  if (type == "default" ){
+    var bg = document.getElementById("body");
+    bg.style.backgroundColor = "white";
+    bg.style.color = "black";
+    var playbutton = document.getElementById("play_button");
+    playbutton.style.backgroundColor = "#555555";
+    playbutton.style.color = "white"; 
+  }
+  else if (type =="dark") {
+    var bg = document.getElementById("body");
+    bg.style.backgroundColor = "rgb(60,60,60)";
+    bg.style.color = "white";
+    var playbutton = document.getElementById("play_button");
+    playbutton.style.backgroundColor = "white";
+    playbutton.style.color = "black";
+
+  } else if (type =="christmas"){
+    var bg = document.getElementById("body");
+    bg.style.backgroundColor = "rgb(216,234,248)";
+    bg.style.color = "black";
+    var playbutton = document.getElementById("play_button");
+    playbutton.style.backgroundColor = "#555555";
+    playbutton.style.color = "white";
+  } 
+  else if (type =="horror") {
+    var bg = document.getElementById("body");
+    bg.style.backgroundColor = "rgb(0,0,0)";
+    bg.style.color = "white";
+    var playbutton = document.getElementById("play_button");
+    playbutton.style.backgroundColor = "white";
+    playbutton.style.color = "black";
+  }
+
+}
+
 function set_percussion(){
+  change_bg_color("dark");
+
   console.log("setting inst to percussion");
   current_instrument_set = TR808;
   var noChord = ["E3", "E3", "E3", "E3", "E3", "E3", "E3"];
+  
   var progression = [];
   for (var i=0; i<53; i++) {
     progression.push(noChord);
@@ -170,8 +239,10 @@ function set_percussion(){
 }
 
 function set_flute(){
+  change_bg_color("default");
   console.log("setting inst to flute");
-  if (current_instrument_set == TR808) {
+
+  if (current_instrument_set == TR808 || current_instrument_set == HORROR || current_instrument_set == CHRISTMAS_INST) {
     current_progression = basic_progression();
   }
   current_instrument_set = FLUTE;
@@ -180,8 +251,9 @@ function set_flute(){
 }
 
 function set_xylophone(){
+  change_bg_color("default");
 
-  if (current_instrument_set == TR808) {
+  if (current_instrument_set == TR808 || current_instrument_set == HORROR || current_instrument_set == CHRISTMAS_INST) {
     current_progression = basic_progression();
   }
   current_instrument_set = XYLOPHONE;
@@ -193,10 +265,35 @@ function set_cmajor() {
   console.log("setting chord to c maj");
   current_progression =  basic_progression();
   // resetChords(binary_contribs);
+  if (current_instrument_set == TR808 || current_instrument_set == HORROR || current_instrument_set == CHRISTMAS_INST) {
+    current_instrument_set = PIANO;
+    change_bg_color("default");
+
+  }
+
+}
+
+function set_aminor(){
+  console.log("setting to a minor");
+
+  var CHORDS = [A7, A7, A7, A7, D7, D7, A7, A7, E7, D7, A7, E7]; 
+  var progression = [];
+  for (var i=0; i<53; i++) {
+    var rand_chord_idx = Math.floor(Math.random() * CHORDS.length);
+    // var rand_chord_idx = i % CHORDS.length;
+    progression.push(CHORDS[rand_chord_idx]);
+  }
+  current_progression = progression ;
+  if (current_instrument_set == TR808 || current_instrument_set == HORROR || current_instrument_set == CHRISTMAS_INST) {
+    current_instrument_set = PIANO;
+    change_bg_color("default");
+  }
+
 }
 
 function set_christmas(){
-  current_instrument_set = PIANO;
+  change_bg_color("christmas");
+  current_instrument_set = CHRISTMAS_INST;
   var C = ["C4", "E4", "G4", "B4", "C3", "E3", "G3"];
   var G = ["G4", "B4", "D4", "F4", "G3", "B3", "D3"];
   var Am = ["A5", "E4", "C4", "A4", "E3", "C3", "A3"];
@@ -216,6 +313,22 @@ function set_christmas(){
   colorSequencer();
   // resetChords(binary_contribs);
 }
+
+function set_horror() {
+  change_bg_color("horror");
+  current_instrument_set = HORROR;
+  var noChord = ["G3", "C4", "E3", 200 , "C3", 300, "G3"];
+  var progression = [];
+  for (var i=0; i<53; i++) {
+    progression.push(noChord);
+  }
+  current_progression = progression ;
+
+  current_colors = PURPLEBLUE;
+  colorSequencer();
+}
+
+
 
 
 //---------------------------------------------------------------------------------------------//
@@ -270,7 +383,8 @@ function playAll() {
     var col = arrayColumn(binary_contribs, chordidx);
     var chord = current_progression[chordidx];
     // console.log(time, chords_to_play[chordidx]);
-    var vel = Math.random() * 0.5 + 0.5;
+    var vel = Math.random() ;
+    console.log(vel);
 
     if (current_instrument_set == TR808) {
       if (col[0] == 1) { current_instrument_set[0].start(time, 0, '8n', 0, vel);};
@@ -281,6 +395,24 @@ function playAll() {
       if (col[5] == 1) { current_instrument_set[5].start(time, 0, '8n', 0, vel);};
       if (col[6] == 1) { current_instrument_set[6].start(time, 0, '8n', 0, vel);};
     } 
+    else if (current_instrument_set == HORROR ){
+      if (col[0] == 1) {
+        current_instrument_set[0].triggerAttack(chord[0], time, vel);};
+      if (col[1] == 1) { 
+        current_instrument_set[1].triggerAttack(chord[1],time, vel);};
+      if (col[2] == 1) { 
+        current_instrument_set[2].triggerAttack(chord[2], time, vel);};
+      if (col[3] == 1) { 
+        current_instrument_set[3].frequency.setValueAtTime(chord[3], time, Math.random()*0.5 + 0.5); 
+        current_instrument_set[3].triggerAttack(time, vel);};
+      if (col[4] == 1) { 
+        current_instrument_set[4].triggerAttack(chord[4], time, vel);};
+      if (col[5] == 1) { 
+        current_instrument_set[5].frequency.setValueAtTime(chord[5], time, Math.random()*0.5 + 0.5); 
+        current_instrument_set[5].triggerAttack(time, vel);};
+      if (col[6] == 1) { 
+        current_instrument_set[6].triggerAttack(chord[6], time, vel);};
+    }
     else { 
       if (col[0] == 1) { current_instrument_set[0].triggerAttackRelease(chord[0], '8n', time, vel);};
       if (col[1] == 1) { current_instrument_set[1].triggerAttackRelease(chord[1], '8n', time, vel);};
@@ -313,9 +445,9 @@ function playAll() {
 
   synthPart.loop = false;
 //   // synthPart.humanize = true;
-
-  // Tone.Transport.bpm.value = current_bpm;
-  Tone.Transport.swing=  0.2;
+  console.log("setting bpm to ", current_bpm);
+  Tone.Transport.bpm.value = current_bpm;
+  Tone.Transport.swing=  0.8;
   Tone.Transport.swingSubdivision = '16n';
   Tone.Transport.start("+01");
 }
@@ -430,14 +562,14 @@ for (var i = 0; i<7; i++){
 
 
 /// BPM slider 
-var slider = document.getElementById("myRange");
-var output = document.getElementById("demo");
+// var slider = document.getElementById("myRange");
+// var output = document.getElementById("demo");
 // output.innerHTML = slider.value; // Display the default slider value
 
-// Update the current slider value (each time you drag the slider handle)
-slider.oninput = function() {
-    Tone.Transport.bpm.value = this.value;
-}
+// // Update the current slider value (each time you drag the slider handle)
+// slider.oninput = function() {
+//     Tone.Transport.bpm.value = this.value;
+// }
 
 }
 
@@ -455,6 +587,13 @@ function colorSequencer() {
     }
   }
   two.update();
+}
+
+
+function notify_change_in_bpm(new_bpm){
+  console.log("change in bpm to ", new_bpm);
+  Tone.Transport.bpm.value = new_bpm;
+  current_bpm = new_bpm;
 }
 
 

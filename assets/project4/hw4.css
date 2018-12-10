@@ -1,6 +1,6 @@
 body{
     padding:2%;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: monospace;
 }
 h1 {
     text-align: center;
@@ -12,10 +12,12 @@ div#userform {
     text-align: center;
     margin:auto;
     width:50%;
+    font-family: monospace;
 }
 #sequencer {
     /* margin:auto; */
-    width:65%;
+    padding-top:3%;
+    width:70%;
     /* padding:1%; */
     /* border-style: solid; */
     /* border-width:1px; */
@@ -23,6 +25,15 @@ div#userform {
   margin-left: auto;
   margin-right: auto;
 }
+
+#current_chord { 
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width:50%;
+    text-align: center;
+}
+
 #play_button {
     background-color: #555555;
     margin:auto;
@@ -43,6 +54,7 @@ div#userform {
         box-shadow:none;
         background-color: white;
         font-size: 1em;
+        font-family: monospace;
 }
 
 #controllers {
@@ -54,50 +66,52 @@ div#userform {
   margin-right: auto; 
 }
 
+#tempo div { 
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
+    width:50%;
+    text-align: center; 
+}
+
 .row { 
     display:flex;
 }
 .column { 
     flex:50%;
 }
-
+.column2 { 
+    flex:80%;
+    /* border-style:solid; */
+}
+.column3 { 
+    flex:10%;
+    /* border-style:solid; */
+}
 button { 
     margin:2%;
     -webkit-transition-duration: 0.4s; /* Safari */
   transition-duration: 0.4s;
   cursor: pointer;
+  font-family: monospace;
 }
 button:hover { 
     background-color: #555555;
     color: white;
 }
-#piano { 
+
+.mybtn { 
     width:7vw;
     height:7vw;
     border-radius:50%;
+
 }
 
-#flute { 
-    width:7vw;
-    height:7vw;
-    border-radius:50%;
+#c_maj:hover { 
+    background-color: rgb(22, 181, 255);
 }
-
-#xylophone { 
-    width:7vw;
-    height:7vw;
-    border-radius:50%;
-}
-
-#tr808 { 
-    width:7vw;
-    height:7vw;
-    border-radius:50%;
-}
-#christmas { 
-    width:7vw;
-    height:7vw;
-    border-radius:50%;
+#a_min:hover { 
+    background-color:rgb(94, 82, 167);
 }
 /* 
 #piano {

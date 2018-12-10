@@ -13,45 +13,57 @@
 
 
   </head>
-  <body>
+  <body id="body">
     <h1>git commit -m "make some noise"</h1> <!-- musical commits -->
     <div id="userform">
       <form id="userform" action="">
-        Enter Github Username <input type="text" name="github_username" id="username">
+        Enter github username <input type="text" name="github_username" id="username">
         <input type="button" onclick="submit_username()" value="Submit">
       </form>
     </div>
     
-    <div id="sequencer" ></div>
+    <div id="mainboard" class="row">
+      <div class="column2">
+        <div id="sequencer" class="column2" ></div>
+      </div>
+      <div id="tempo" class="column3">
+        <div>
+          <p class="panel_label"> Tempo (bpm)</p>
+        </div>
+        <div id="tempo_dial"></div>
+        <div id="tempo_number"></div>
+      </div>
+
+
+
+    </div>
     
     <!-- <div><p id="play_button"></p></div> -->
-    <button class="btn" id="play_button">Waiting for you to enter username</button>
     <div id="current_chord"></div>
+    <button class="btn" id="play_button">Waiting for you to enter username</button>
 
     <div id="controllers" > 
-      <div class="slidecontainer">
-        BPM<input type="range" min="40" max="200" value="80" class="slider" id="myRange">
-      </div>
 
       <div class="row" id="chord_inst">
         <div class="column" id="chord_buttons">
         <p>Choose a chord progression</p>
-          <button class="btn" id="c_maj" onclick="set_cmajor()">C major</button>
-          <button class="btn" id="minor_pentatonic">G minor pentatonic</button>
+          <button class="btn mybtn" id="c_maj" onclick="set_cmajor()">C major</button>
+          <button class="btn mybtn" id="a_min" onclick="set_aminor()">A minor</button>
         </div>
 
         <div class="column" id="inst_buttons">
         <p>Choose an instrument</p>
-          <button class="btn" id="piano" onclick="set_piano()">piano</button>
-          <button class="btn" id="flute" onclick="set_flute()">flute</button>
-          <button class="btn" id="xylophone" onclick="set_xylophone()">xylophone</button>
-          <button class="btn" id="tr808" onclick="set_percussion()">TR808</button>
+          <button class="btn mybtn" id="piano" onclick="set_piano()">piano</button>
+          <button class="btn mybtn" id="flute" onclick="set_flute()">flute</button>
+          <button class="btn mybtn" id="xylophone" onclick="set_xylophone()">xylophone</button>
+          <button class="btn mybtn" id="tr808" onclick="set_percussion()">TR808</button>
 
         </div>
       </div>
       <p>Or go with a theme</p>
       <div id="theme_buttons">
-        <button class="btn" id="christmas" onclick="set_christmas()">christmas</button>
+        <button class="btn mybtn" id="christmas" onclick="set_christmas()">christmas</button>
+        <button class="btn mybtn" id="horror" onclick="set_horror()">horror</button>
       </div>
     </div>
 
@@ -60,9 +72,35 @@
   </body>
 
 <script> 
+var current_bpm=80;
+notify_change_in_bpm(current_bpm);
+  // tempo
+var tempo_dial = new Nexus.Dial('#tempo_dial',{
+  'size': [75,75],
+  'interaction': 'radial', // "radial", "vertical", or "horizontal"
+  'mode': 'absolute', // "absolute" or "relative"
+  'min': 50,
+  'max': 200,
+  'step': 1,
+  'value': current_bpm,
+})
+var tempo_number = new Nexus.Number('#tempo_number',{
+  'size': [60,30],
+  'value': current_bpm,
+  'min': 50,
+  'max': 200,
+  'step': 1
+})
+// link tempo dial to tempo number
+tempo_number.link(tempo_dial);
 
-
-
+// tempo change
+tempo_dial.on('change',function(v) {
+	// convert BPM to internal in milisecond
+  // note that 4 steps correspond to one beat in the sequencer
+  console.log("tempo change", v);
+  notify_change_in_bpm(v);
+})
   </script>
 
 
