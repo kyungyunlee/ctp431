@@ -24,7 +24,8 @@
     
     <div id="mainboard" class="row">
       <div class="column2">
-        <div id="sequencer" class="column2" ></div>
+        <canvas id="myCanvas" class="column2" width="1000px" height="150px">
+       </canvas>
       </div>
       <div id="tempo" class="column3">
         <div>
@@ -37,10 +38,13 @@
 
 
     </div>
+    <p id="username_warning"></p>
+
+
     
     <!-- <div><p id="play_button"></p></div> -->
     <div id="current_chord"></div>
-    <button class="btn" id="play_button">Waiting for you to enter username</button>
+    <button class="btn" id="play_button" onclick="click_playbutton()">Waiting for you to enter username</button>
 
     <div id="controllers" > 
 
@@ -64,6 +68,13 @@
       <div id="theme_buttons">
         <button class="btn mybtn" id="christmas" onclick="set_christmas()">christmas</button>
         <button class="btn mybtn" id="horror" onclick="set_horror()">horror</button>
+      </div>
+      
+      <p id="suggestions">Not satisfied with yours? Next time, try to commit like these cool sounding ones ;)</p>
+      <div id="commit_suggestions">
+        <button class="btn mybtn" id="tr808pattern1" onclick="tr808_pattern1()">TR808 Afrika Bambaataa</button>
+        <button class="btn mybtn" id="twinkletwinkle" onclick="twinkletwinkle()">Twinkle twinkle</button>
+        <button class="btn mybtn" id="random" onclick="randomize()">RANDOM!</button>
       </div>
     </div>
 
@@ -101,6 +112,8 @@ tempo_dial.on('change',function(v) {
   console.log("tempo change", v);
   notify_change_in_bpm(v);
 })
+console.log("hi from html");
+initialize_tempo_dial();
   </script>
 
 

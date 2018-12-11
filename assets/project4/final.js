@@ -20,10 +20,6 @@ var Bb = ["D5", "Bb4", "F4", "D4", "Bb3", "F3", "D3"];
 var Dm7b5 = ["C4", "G#4", "F4", "D4", "G#3", "F3", "D3"];
 
 var BASIC_C_MAJOR = [ C, F, G, C];
-// var CHRISTMAS = [C, C7, F, Dm7b5];
-// key: c major 
-// 
- 
 
 
 function jazzy_chord_progression(){
@@ -49,8 +45,154 @@ function basic_progression(){
   }
   return progression;
 }
+//----------------------------- COMMIT PATTERN SUGGESTIONS -----------------------------------------------// 
 
-//--------------------------- INSTRUMENTS -----------------------------------------------// 
+function tr808_pattern1(){
+  var warning = document.getElementById("username_warning");
+  warning.innerHTML = "";
+
+  playbutton = document.getElementById("play_button");
+  if (playbutton.isPlaying) { 
+    playbutton.isPlaying = false;
+    synthPart.stop();
+    playbutton.innerHTML = "play";
+  }
+  change_bg_color("dark");
+  num_contribs = new Array(7).fill(0).map(() => new Array(53).fill(0));
+  
+  binary_contribs = [[1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1, 1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1, 1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1, 1,0,1,1,1], //closed hihat
+                     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0],
+                     [1,0,1,0,1,0,1,1,0,1,0,1,1,0,1,0, 1,0,1,0,1,0,1,1,0,1,0,1,1,0,1,0, 1,0,1,0,1,0,1,1,0,1,0,1,1,0,1,0, 1,0,1,0,1], // cowbell
+                     [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0, 0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0, 0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0, 0,0,0,0,1], // maracas , snare
+                     [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0, 0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0, 0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0, 0,0,0,0,1], // maracas , snare
+                     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0],
+                     [1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0, 1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0, 1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0, 1,0,0,0,0]]; // bass
+  for (var i=0;i<7;i++){
+    for (var j=0;j<53;j++){
+      if (binary_contribs[i][j] == 1) {  
+        if ((j+1)%16 < 5 ) {
+          num_contribs[i][j] = 10;
+        }
+        else if ((j+1)%16 < 9){
+          num_contribs[i][j] = 6;
+        }
+        else if ((j+1)%16 < 13){
+          num_contribs[i][j] = 2;
+        }
+        else if ((j+1)%16 < 16){
+          num_contribs[i][j] = 1;
+        }
+
+        if (j == 15 || j == 31 || j == 47){
+          num_contribs[i][j] = 1;
+        }
+      }
+    }
+  }
+  console.log(num_contribs);
+  console.log(binary_contribs);
+  current_instrument_set = TR808;
+  current_colors = REDYELLOW;
+  set_tempo(148);
+  colorSequencer();
+  make_play_button(); 
+
+}
+
+
+function twinkletwinkle() {
+  var warning = document.getElementById("username_warning");
+  warning.innerHTML = "";
+  playbutton = document.getElementById("play_button");
+  if (playbutton.isPlaying) {  
+    playbutton.isPlaying = false;
+    synthPart.stop();
+    playbutton.innerHTML = "play";
+  }
+
+  change_bg_color("default");
+  C = ["C4", "G3","E3","C3","G2","E2","C2"];
+  F = [ "A3","F3","F3","C3", "A2","F2","C2"];
+  G7 = ["B3","G3","F3","D3","G2","F2","B1"];
+  
+  current_progression = [C,C,C,C, F,F,C,C, F,F,C,C, G7,G7,C,C, C,C,F,F, C,C,G7,G7, 
+                         C,C,F,F, C,C,G7,G7, C,C,C,C, F,F,C,C, F,F,C,C, G7,G7,C,C,
+                         C,C, G7,G7,C];
+
+
+  num_contribs = new Array(7).fill(0).map(() => new Array(53).fill(0));
+  
+  binary_contribs = [[0,0,0,0,1,1,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,1,1,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0], //closed hihat
+                     [0,0,1,1,0,0,1,0, 0,0,0,0,0,0,0,0, 1,1,0,0,0,0,0,0, 1,1,0,0,0,0,0,0, 0,0,1,1,0,0,1,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0],
+                     [0,0,0,0,0,0,0,0, 1,1,1,1,0,0,0,0, 0,0,1,1,1,1,0,0, 0,0,1,1,1,1,0,0, 0,0,0,0,0,0,0,0, 1,1,1,1,0,0,0,0, 1,1,0,0,0], // cowbell
+                     [1,1,0,0,0,0,0,0, 0,0,0,0,1,1,1,0, 0,0,0,0,0,0,1,0, 0,0,0,0,0,0,1,0, 1,1,0,0,0,0,0,0, 0,0,0,0,1,1,1,0, 0,0,1,1,1], // maracas , snare
+                     [1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1], // maracas , snare
+                     [1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1],
+                     [1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1,0,1,0, 1,0,1,0,1]]; // bass
+
+  for (var i=0;i<7;i++){
+    for (var j=0;j<53;j++){
+      if (binary_contribs[i][j] == 1) {  
+        if (i < 4) { 
+          num_contribs[i][j] = 1;
+        }
+        else{
+          console.log(current_progression[j] == G7);
+            if (current_progression[j] == C) {
+              num_contribs[i][j] = 2;
+            }
+            else if (current_progression[j] == F){ 
+              num_contribs[i][j] = 6;
+            }
+            else if (current_progression[j] == G7){ 
+              num_contribs[i][j] = 10;
+            }
+        }
+      }
+    }
+  }
+
+  current_instrument_set = PIANO;
+  current_colors = MELODY;
+  set_tempo(100);
+  colorSequencer();
+  make_play_button();
+
+} 
+
+function randomize(){
+  var warning = document.getElementById("username_warning");
+  warning.innerHTML = "";
+  playbutton = document.getElementById("play_button");
+  if (playbutton.isPlaying) {  
+    playbutton.isPlaying = false;
+    synthPart.stop();
+    playbutton.innerHTML = "play";
+  }
+  change_bg_color("default");
+
+  current_progression = basic_progression();
+  num_contribs = new Array(7).fill(0).map(() => new Array(53).fill(0));
+  binary_contribs = new Array(7).fill(0).map(() => new Array(53).fill(0));
+  for (var i=0;i<7;i++){
+    for (var j=0;j<53;j++){
+      if (Math.random() >= 0.7){
+        binary_contribs[i][j] =1;
+        num_contribs[i][j] = Math.random() * 10;
+      }
+    }
+  }
+
+  current_instrument_set = PIANO;
+  current_colors = GREEN;
+  set_tempo(Math.random() * 150);
+  colorSequencer();
+  make_play_button();
+
+}
+
+
+//----------------------------- INSTRUMENTS -----------------------------------------------// 
 var synth = new Tone.PolySynth(7, Tone.Synth).toMaster();
 
 var reverb = new Tone.Reverb({delay:0.01,}).toMaster();
@@ -88,8 +230,12 @@ var  cymbol =  new Tone.Player({
 
   }).toMaster()
  
-  var lowconga =  new Tone.Player({
-    url: 'assets/project4/tonejs-instruments/samples/drumset/LC10.WAV',
+  var cowbell =  new Tone.Player({
+    url: 'assets/project4/tonejs-instruments/samples/drumset/CB.WAV',
+}).toMaster()
+
+var handclap =  new Tone.Player({
+  url: 'assets/project4/tonejs-instruments/samples/drumset/CP.WAV',
 }).toMaster()
 
 var piano = SampleLibrary.load({
@@ -138,9 +284,9 @@ var conga = new Tone.MembraneSynth({
 }).toMaster();
 
 
-//---------------------------------------------------------------------------------------------// 
-// Instrument pre-set 
-const TR808 = [kick, lowtom, midtom, snare, closed_hihat, hitom, kick]; 
+//------------------------------   INSTRUMENT PRESET --------------------------------------------------// 
+// const TR808 = [kick, lowtom, midtom, hitom, snare, cowbell, closed_hihat];
+const TR808 = [closed_hihat, lowtom, cowbell, snare, snare, hitom, kick];
 // const JAZZ_INST = [kick, contrabass, contrabass, contrabass, saxophone, saxophone, saxophone];
 const PIANO = [piano, piano, piano, piano, piano, piano, piano];
 const GUITAR = [guitar_electric, guitar_electric, guitar_electric, guitar_electric, guitar_electric, guitar_electric, guitar_electric];
@@ -156,14 +302,15 @@ const HORROR = [conga, conga, conga, bell, conga, bell, conga];
 
 
 
+//------------------------------   SEQUENCER COLOR PRESET --------------------------------------------------// 
 
 const GREEN =  ['rgb(198, 227, 143)', 'rgb(126, 199, 115)', 'rgb(42,153,64)', 'rgb(29, 96, 41)'];
-const REDYELLOW = [ 'rgb(222,215,0)', 'rgb(233,124,0)', 'rgb(216, 46, 8)', 'rgb(216, 46, 8)'];
+const REDYELLOW = ['rgb(229,232,191)','rgb(222,219,48)', 'rgb(240,115,32)','rgb(220,32,23)'];
 const REDGREEN = ['rgb(225,32,44)', 'rgb(23, 160,81)', 'rgb(207,44,45)', 'rgb(33,146,76)'];
 const ORANGEBLACK = ['rgb(253,153,39)', 'rgb(50,50,50)','rgb(252,78,30)', 'rgb(5,5,5)'];
 const PURPLEBLUE = ['rgb(167,54,168)', 'rgb(86,185,203)','rgb(68,121,168)' ,'rgb(250,80,62)'];
 // const PURPLEBLUE = ['rgb(73, 172,182)','rgb(197, 71,96)','rgb(62, 167, 182)','rgb(199,73,96)']
-
+const MELODY = ['rgb(246,215,81)',  'rgb(86, 131,227)','rgb(153,201,83)', 'rgb(239,97,118)'];
 
 // GLOBAL VARIABLES TO CHANGE OVERALL SETTINGS 
 var synthPart;
@@ -172,18 +319,24 @@ var current_instrument_set = PIANO;
 var current_colors = GREEN;
 var current_bpm;
 
-// USER SETTING INST AND CHORDS 
-function set_piano() { 
-  change_bg_color("default");
-  console.log("setting inst to piano");
-
-  if (current_instrument_set == TR808 || current_instrument_set == HORROR || current_instrument_set == CHRISTMAS_INST) {
-    current_progression = basic_progression();
-  }
-  current_instrument_set = PIANO;
-  current_colors = GREEN;
-  colorSequencer();
+// tempo dial from html
+var tempodial;
+var temponum;
+function initialize_tempo_dial() { 
+  tempodial = tempo_dial; 
+  temponum = tempo_number;
 }
+
+function set_tempo(tmp){
+  tempodial.value = tmp;
+  temponum.value = tmp;
+  current_bpm = tmp;
+}
+console.log("hi from js");
+//------------------------------   INSTRUMENT & CHORD SETTERS --------------------------------------------------// 
+
+// USER SETTING INST AND CHORDS 
+
 
 function change_bg_color (type) {
   if (type == "default" ){
@@ -218,7 +371,19 @@ function change_bg_color (type) {
     playbutton.style.backgroundColor = "white";
     playbutton.style.color = "black";
   }
+}
 
+function set_piano() { 
+  change_bg_color("default");
+  console.log("setting inst to piano");
+
+  if (current_instrument_set == TR808 || current_instrument_set == HORROR || current_instrument_set == CHRISTMAS_INST) {
+    current_progression = basic_progression();
+  }
+  current_instrument_set = PIANO;
+  current_colors = GREEN;
+  set_tempo(80);
+  colorSequencer();
 }
 
 function set_percussion(){
@@ -233,8 +398,8 @@ function set_percussion(){
     progression.push(noChord);
   }
   current_progression = progression ;
-
   current_colors = REDYELLOW;
+  set_tempo(140);
   colorSequencer();
 }
 
@@ -247,6 +412,7 @@ function set_flute(){
   }
   current_instrument_set = FLUTE;
   current_colors = GREEN;
+  set_tempo(80);
   colorSequencer();
 }
 
@@ -258,6 +424,7 @@ function set_xylophone(){
   }
   current_instrument_set = XYLOPHONE;
   current_colors = GREEN;
+  set_tempo(80);
   colorSequencer();
 }
 
@@ -268,8 +435,10 @@ function set_cmajor() {
   if (current_instrument_set == TR808 || current_instrument_set == HORROR || current_instrument_set == CHRISTMAS_INST) {
     current_instrument_set = PIANO;
     change_bg_color("default");
-
   }
+  current_colors = GREEN;
+  set_tempo(80);
+  colorSequencer();
 
 }
 
@@ -288,6 +457,9 @@ function set_aminor(){
     current_instrument_set = PIANO;
     change_bg_color("default");
   }
+  current_colors = GREEN;
+  set_tempo(80);
+  colorSequencer();
 
 }
 
@@ -323,7 +495,7 @@ function set_horror() {
     progression.push(noChord);
   }
   current_progression = progression ;
-
+  set_tempo(160);
   current_colors = PURPLEBLUE;
   colorSequencer();
 }
@@ -331,9 +503,10 @@ function set_horror() {
 
 
 
-//---------------------------------------------------------------------------------------------//
+//-------------------------------------- AUDIO PLAY RELATED CODE -----------------------------------------//
 
 const arrayColumn = (arr, n) => arr.map(x => x[n]);
+var playbutton; 
 
 // var chords_to_play = []; // contain chord progressions (53 in total)
 
@@ -342,6 +515,8 @@ function githubCommitProcessor(binaryContrib, numContrib){
   console.log("binary contribution matrix", binaryContrib.length, binaryContrib[0].length);
 
   // UPDATE SEQUENCER WITH MY DATA ! 
+  set_piano();
+  current_progression = basic_progression(); 
   colorSequencer();
 
   make_play_button();
@@ -349,10 +524,13 @@ function githubCommitProcessor(binaryContrib, numContrib){
 
 
 function make_play_button(){
-  var playbutton = document.getElementById("play_button");
+  playbutton = document.getElementById("play_button");
   playbutton.innerHTML = "play";
   playbutton.isPlaying = false;
-  playbutton.addEventListener('click', function () {
+}
+
+function click_playbutton(){
+  console.log("playbutton clicked");
     if (playbutton.isPlaying == false) {
       console.log("play");
       playbutton.isPlaying = true;
@@ -366,7 +544,6 @@ function make_play_button(){
       synthPart.stop(); 
       colorSequencer(); // undo coloring
     }
-  })
 
 }
 
@@ -387,13 +564,13 @@ function playAll() {
     console.log(vel);
 
     if (current_instrument_set == TR808) {
-      if (col[0] == 1) { current_instrument_set[0].start(time, 0, '8n', 0, vel);};
-      if (col[1] == 1) { current_instrument_set[1].start(time, 0, '8n', 0, vel);};
-      if (col[2] == 1) { current_instrument_set[2].start(time, 0, '8n', 0, vel);};
-      if (col[3] == 1) { current_instrument_set[3].start(time, 0, '8n', 0, vel);};
-      if (col[4] == 1) { current_instrument_set[4].start(time, 0, '8n', 0, vel);};
-      if (col[5] == 1) { current_instrument_set[5].start(time, 0, '8n', 0, vel);};
-      if (col[6] == 1) { current_instrument_set[6].start(time, 0, '8n', 0, vel);};
+      if (col[0] == 1) { current_instrument_set[0].start(time, 0, '16n');};
+      if (col[1] == 1) { current_instrument_set[1].start(time, 0, '16n');};
+      if (col[2] == 1) { current_instrument_set[2].start(time, 0, '16n');};
+      if (col[3] == 1) { current_instrument_set[3].start(time, 0, '16n');};
+      if (col[4] == 1) { current_instrument_set[4].start(time, 0, '16n');};
+      if (col[5] == 1) { current_instrument_set[5].start(time, 0, '16n');};
+      if (col[6] == 1) { current_instrument_set[6].start(time, 0, '16n');};
     } 
     else if (current_instrument_set == HORROR ){
       if (col[0] == 1) {
@@ -424,26 +601,40 @@ function playAll() {
     }
     // synth.triggerAttackRelease(chords_to_play[chordidx], '8n', time);
 
+    context = elem.getContext('2d');
+
+    if (current_instrument_set == TR808 || current_instrument_set == HORROR) { 
+      strokec = "rgb(100,100,100)"
+    }
+    else {
+      strokec = "rgb(210,210,210)"
+    }
+
+
     // schedule updates to the GUI
     Tone.Draw.schedule(function () { 
+      if (idx > 52) {
+        idx = 0;
+        clear_redraw();
+      }
       $('#current_chord').text(chord);
       if (moment != time) { 
         idx++;
         console.log(idx, time);
         current_col = arrayColumn(rects, idx);
         for (var i=0; i<7; i++) {
-            rects[i][idx].stroke = 'rgb(210,210,210)';
-            rects[i][idx].linewidth = 2;
+
+            oRec = rects[i][idx];
+            context.strokeStyle =strokec; 
+            context.lineWidth = 1.5;
+            context.strokeRect(oRec.x,oRec.y, oRec.w, oRec.h);
+            
         }
-        two.update();
       }
     })
-
-
-
   }, range, '8n').start();
 
-  synthPart.loop = false;
+  synthPart.loop = true;
 //   // synthPart.humanize = true;
   console.log("setting bpm to ", current_bpm);
   Tone.Transport.bpm.value = current_bpm;
@@ -482,6 +673,12 @@ function parse_my_contributions(res, callback){
   }
   console.log(today_date, day);
 
+  var warning = document.getElementById("username_warning");
+  if (!contribs){
+    warning.innerHTML = "Nooooo user name is incorrect. Try again or check out the buttons at the very bottom!";
+  } else { 
+    warning.innerHTML = "";
+  }
 
   // fill in your contribution into the sequencer
   num_contribs = new Array(7).fill(0).map(() => new Array(53).fill(0));
@@ -525,24 +722,40 @@ function httpGetAsync(theUrl, callback)
 }
 
 function submit_username() { 
+  playbutton = document.getElementById("play_button");
+  playbutton.innerHTML = "Please wait a bit.."; 
+  playbutton.isPlaying = false;
+  clear_data();
   var username = document.getElementById("username").value;
   console.log("recieved", username);
   var url = 'https://github-contributions-api.now.sh/v1/' + username;
   httpGetAsync(url, parse_my_contributions);
 }
 
+function clear_data(){
+  num_contribs = new Array(7).fill(0).map(() => new Array(53).fill(0));
+  binary_contribs = new Array(7).fill(0).map(() => new Array(53).fill(0));
 
+}
 
-//--------------------------- SEQUENCER DRAWER  -----------------------------------------------// 
+//---------------------------------- GUI DRAWER  -----------------------------------------------// 
 
 var elem;
-var two;
-var rects = [];
+var rects = []; // html canvas rectangles for sequencer
+
+function Shape(x,y, w, h, fill){
+  this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.fill = fill;
+}
+
 // Make an instance of two and place it on the page.
 window.onload = function () { 
-  elem = document.getElementById("sequencer");
-  var params = { width: 1000, height:150 };
-  two = new Two(params).appendTo(elem);
+  elem = document.getElementById("myCanvas");
+  var params = { width: elem.width, height:elem.height };
+  // two = new Two(params).appendTo(elem);
   var rect_size = 13;
   var gap_size = 3;
 
@@ -550,43 +763,72 @@ window.onload = function () {
 for (var i = 0; i<7; i++){
   var row = [];
   for (var j=0; j<53; j++) {
-    var rect = two.makeRectangle( rect_size/2 + j * (rect_size + gap_size), rect_size /2 + i *(rect_size + gap_size),rect_size, rect_size);
-    rect.fill = 'rgb(230, 230, 230)';
-    rect.opacity = 0.75;
-    rect.noStroke();
-    row.push(rect);
+    row.push(new Shape(rect_size/2 + j * (rect_size + gap_size), rect_size /2 + i *(rect_size + gap_size), rect_size, rect_size, "rgb(230,230,230)"));
   }
   rects.push(row);
 }
-  two.update();
+  context = elem.getContext('2d');
+  for (var i=0; i < 7; i++ ) { // 7 
+    for (var j=0; j < 53; j++ ){ // 53
+        oRec = rects[i][j];
+        context.fillStyle = rects[i][j].fill;
+        context.fillRect(oRec.x, oRec.y, oRec.w, oRec.h);
 
-
-/// BPM slider 
-// var slider = document.getElementById("myRange");
-// var output = document.getElementById("demo");
-// output.innerHTML = slider.value; // Display the default slider value
-
-// // Update the current slider value (each time you drag the slider handle)
-// slider.oninput = function() {
-//     Tone.Transport.bpm.value = this.value;
-// }
+    }
+  }
 
 }
 
 function colorSequencer() {
-  // console.log(binaryContrib);
+  clear_redraw();
+  context = elem.getContext('2d');
   for (var i=0; i < binary_contribs.length; i++ ) { // 7 
     for (var j=0; j <binary_contribs[i].length; j++ ){ // 53
         if (binary_contribs[i][j] == 1 ){
-          if (num_contribs[i][j] == 1 ) { rects[i][j].fill = current_colors[0];}
-          else if (num_contribs[i][j] <3 ) {rects[i][j].fill = current_colors[1];}
-          else if (num_contribs[i][j] <7 ) {rects[i][j].fill = current_colors[2];}
-          else { rects[i][j].fill = current_colors[3];}
+          if (num_contribs[i][j] == 1 ) { 
+            rects[i][j].fill = current_colors[0];
+          }
+          else if (num_contribs[i][j] <3 ) {
+            rects[i][j].fill = current_colors[1];
+          }
+          else if (num_contribs[i][j] <7 ) {
+            rects[i][j].fill = current_colors[2];
+          }
+          else { 
+            rects[i][j].fill = current_colors[3];
+          }
+          oRec = rects[i][j];
+          context.fillStyle = oRec.fill;
+          context.lineWidth = 0;
+          // context.strokeRect(oRec.x, oRec.y, oRec.w, oRec.h);
+          context.fillRect(oRec.x, oRec.y, oRec.w, oRec.h);
         }
-        rects[i][j].noStroke();
     }
   }
-  two.update();
+}
+
+
+function clear_redraw(){
+  if (current_instrument_set == TR808 || current_instrument_set == HORROR) { 
+    rectc = "rgb(70,70,70)"
+  }
+  else {
+    rectc = "rgb(230,230,230)"
+  }
+     context = elem.getContext('2d');
+      context.clearRect(0,0, elem.width, elem.height);
+      for (var i=0; i < 7; i++ ) { // 7 
+        for (var j=0; j < 53; j++ ){ // 53
+            oRec = rects[i][j];
+          if (binary_contribs[i][j] ==0 ){ 
+            context.fillStyle =rectc;
+            context.fillRect(oRec.x, oRec.y, oRec.w, oRec.h);
+          } else {
+            context.fillStyle =oRec.fill;
+            context.fillRect(oRec.x, oRec.y, oRec.w, oRec.h);
+          } 
+        }
+      }
 }
 
 
@@ -595,5 +837,4 @@ function notify_change_in_bpm(new_bpm){
   Tone.Transport.bpm.value = new_bpm;
   current_bpm = new_bpm;
 }
-
 
