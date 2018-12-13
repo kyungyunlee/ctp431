@@ -7,6 +7,7 @@ var Fm = ["F5", "C4", "Ab4", "F4", "C3", "Ab3", "F3"];
 var F_sharp_dim = ["F#4", "D#4", "C4", "A3", "F#3", "D#3", "C3"];
 var F7 = ["C4", "A4", "F4", "E3", "C3", "A3","F3"];
 var E7 = ["D4", "B4","G#4", "E4","B3","G#3","E3"];
+var Em7 = ["D4", "B4","G4", "E4","B3","G3","E3"];
 var G = ["G5", "D4", "B4", "G4", "D3", "B3","G3"];
 var G7b9 = ["E5", "B4", "G#4", "F4", "B3", "G#3", "F3"];
 var A = ["C#4", "E4", "A4", "C#3", "E3","A3", "A2"]
@@ -36,7 +37,7 @@ function jazzy_chord_progression(){
 }
 
 function basic_progression(){
-  var basic_chords = [C,C, F, F, F, F, F7, F7, G, G, G,G,C, C];
+  var basic_chords = [C, C, F, F, F, F, F7, F7, G, G, G, G, C, C];
   var progression = [];
   for (var i=0; i<53; i++) {
     // var rand_chord_idx = Math.floor(Math.random() * basic_chords.length);
@@ -259,9 +260,6 @@ var xylophone = SampleLibrary.load({
 }).toMaster();  
 
 
-var human_voice = new Tone.Sampler({
-  'C4' :'assets/project4/tonejs-instruments/samples/Alesis-Sanctuary-QCard-Choir-Aah-C4.wav'
-}, {"fadeOut" : "64n" }).connect(reverb);
 
 var bell = new Tone.MetalSynth({
   "harmonicity" : 12,
@@ -285,18 +283,10 @@ var conga = new Tone.MembraneSynth({
 
 
 //------------------------------   INSTRUMENT PRESET --------------------------------------------------// 
-// const TR808 = [kick, lowtom, midtom, hitom, snare, cowbell, closed_hihat];
 const TR808 = [closed_hihat, lowtom, cowbell, snare, snare, hitom, kick];
-// const JAZZ_INST = [kick, contrabass, contrabass, contrabass, saxophone, saxophone, saxophone];
 const PIANO = [piano, piano, piano, piano, piano, piano, piano];
-const GUITAR = [guitar_electric, guitar_electric, guitar_electric, guitar_electric, guitar_electric, guitar_electric, guitar_electric];
-const SAX = [saxophone, saxophone,saxophone,saxophone,saxophone,saxophone,saxophone];
-// const CONTRABASS = [contrabass, contrabass,contrabass,contrabass,contrabass,contrabass,contrabass];
 const FLUTE = [flute, flute, flute,flute, flute, flute, flute];
 const XYLOPHONE = [xylophone, xylophone, xylophone, xylophone, xylophone, xylophone, xylophone];
-// const CHRISTMAS = [];
-const CHOIR = [human_voice, human_voice, human_voice, human_voice, human_voice, human_voice, human_voice];
-// const CHRISTMAS_INST = [bell, bell, bell, bell, bell, bell, bell];
 const CHRISTMAS_INST = [xylophone, xylophone, xylophone, xylophone, xylophone, xylophone, xylophone];
 const HORROR = [conga, conga, conga, bell, conga, bell, conga];
 
@@ -331,6 +321,7 @@ function set_tempo(tmp){
   tempodial.value = tmp;
   temponum.value = tmp;
   current_bpm = tmp;
+  Tone.Transport.bpm.value = tmp;
 }
 console.log("hi from js");
 //------------------------------   INSTRUMENT & CHORD SETTERS --------------------------------------------------// 
@@ -553,7 +544,7 @@ for (var i = 0; i < 53; i++) {
 }
 
 function playAll() { 
-  var idx = -1;
+  var idx = 0;
   var moment = 0;
   //chords_to_play
   synthPart = new Tone.Sequence(function(time, chordidx) { 
@@ -564,13 +555,13 @@ function playAll() {
     console.log(vel);
 
     if (current_instrument_set == TR808) {
-      if (col[0] == 1) { current_instrument_set[0].start(time, 0, '16n');};
-      if (col[1] == 1) { current_instrument_set[1].start(time, 0, '16n');};
-      if (col[2] == 1) { current_instrument_set[2].start(time, 0, '16n');};
-      if (col[3] == 1) { current_instrument_set[3].start(time, 0, '16n');};
-      if (col[4] == 1) { current_instrument_set[4].start(time, 0, '16n');};
-      if (col[5] == 1) { current_instrument_set[5].start(time, 0, '16n');};
-      if (col[6] == 1) { current_instrument_set[6].start(time, 0, '16n');};
+      if (col[0] == 1) { current_instrument_set[0].start(time, 0, '8n');};
+      if (col[1] == 1) { current_instrument_set[1].start(time, 0, '8n');};
+      if (col[2] == 1) { current_instrument_set[2].start(time, 0, '8n');};
+      if (col[3] == 1) { current_instrument_set[3].start(time, 0, '8n');};
+      if (col[4] == 1) { current_instrument_set[4].start(time, 0, '8n');};
+      if (col[5] == 1) { current_instrument_set[5].start(time, 0, '8n');};
+      if (col[6] == 1) { current_instrument_set[6].start(time, 0, '8n');};
     } 
     else if (current_instrument_set == HORROR ){
       if (col[0] == 1) {
@@ -619,7 +610,6 @@ function playAll() {
       }
       $('#current_chord').text(chord);
       if (moment != time) { 
-        idx++;
         console.log(idx, time);
         current_col = arrayColumn(rects, idx);
         for (var i=0; i<7; i++) {
@@ -630,6 +620,7 @@ function playAll() {
             context.strokeRect(oRec.x,oRec.y, oRec.w, oRec.h);
             
         }
+        idx++;
       }
     })
   }, range, '8n').start();

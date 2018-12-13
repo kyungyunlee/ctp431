@@ -52,7 +52,7 @@
         <div class="column" id="chord_buttons">
         <p>Choose a chord progression</p>
           <button class="btn mybtn" id="c_maj" onclick="set_cmajor()">C major</button>
-          <button class="btn mybtn" id="a_min" onclick="set_aminor()">A minor</button>
+          <button class="btn mybtn" id="a_min" onclick="set_aminor()">Blues in A major</button>
         </div>
 
         <div class="column" id="inst_buttons">
@@ -83,7 +83,7 @@
   </body>
 
 <script> 
-var current_bpm=80;
+var current_bpm=100;
 notify_change_in_bpm(current_bpm);
   // tempo
 var tempo_dial = new Nexus.Dial('#tempo_dial',{
