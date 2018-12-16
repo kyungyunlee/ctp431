@@ -1,122 +1,57 @@
 <html>
-  <head>
-    <title> Final Project: Github sounds  </title>
-    <script type="text/javascript" src="assets/project3/NexusUI.js"></script>
-    <script type="text/javascript" src="assets/project4/lib/Tone.js"></script>
-    <script type="text/javascript" src="assets/project4/lib/Interface.js"></script>
-    <script type="text/javascript" src="assets/project4/lib/draggabilly.js"></script>
-    <script type="text/javascript" src="assets/project4/lib/two.min.js"></script>
-    <script type="text/javascript" src="assets/project4/tonejs-instruments/Tonejs-Instruments.js"></script>
-    <script type="text/javascript" src="assets/project4/final.js"></script>
-    <!-- <script data-main="app" src="assets/project4/lib/require.js"></script> -->
-    <link  href='assets/project4/hw4.css' rel='stylesheet'>
+    <head>
+        <link  href='assets/project4/hw4.css' rel='stylesheet'>
 
-
-  </head>
-  <body id="body">
-    <h1>git commit -m "make some noise"</h1> <!-- musical commits -->
-    <div id="userform">
-      <form id="userform" action="">
-        Enter github username <input type="text" name="github_username" id="username">
-        <input type="button" onclick="submit_username()" value="Submit">
-      </form>
-    </div>
-    
-    <div id="mainboard" class="row">
-      <div class="column2">
-        <canvas id="myCanvas" class="column2" width="1000px" height="150px">
-       </canvas>
-      </div>
-      <div id="tempo" class="column3">
+    </head>
+    <body>
+        <h1>CTP431 Final Project: <br> git commit -m "make some noise"</h1>
+        <h2>Turn your Github commits into a step sequencer</h2>
+        <p>Essentially, this is a data sonification of github commit history. <br><br>
+            Each column corresponds to either
+            <li>one chord with each row being a single note in the chord </li>
+            <li>or each column is a single set of instruments with each row being different instruments.</li>
+        </p>
+        <div>   
+            <img src="assets/project4/seq.png" width="80%"></img>
+        </div>
+        <a href="gitcommit.html" style="font-size:1.3em">Go to project website (Chrome recommended)</a>
+        <h3>Options</h3>
+        <ul>
+            <li>Chord progression
+                <ul>
+                   <li>I-IV-V in C major</li> 
+                   <li>Blues in A (A7, D7, E7)</li>
+                </ul>
+            </li>
+            <li>Instruments
+                <ul>
+                    <li>piano</li>
+                    <li>flue</li>
+                    <li>xylophone</li>
+                    <li>TR808</li>
+                </ul> 
+            </li>
+            <li>Themes
+                <ul>
+                    <li>christmas</li>
+                    <li>horror</li>
+                </ul> 
+            </li>
+            <li>Commit patterns: just in case your github commits sound terrible</li>
+        </ul>
+        <h3>Libraries, samples used</h3>
+        <ul>
+            <li><a href="https://tonejs.github.io/">Tone.js</a></li>
+            <li><a href="https://nexus-js.github.io/ui/">Nexus UI</a></li>
+            <li><a href="https://github.com/nbrosowsky/tonejs-instruments">https://github.com/nbrosowsky/tonejs-instruments</a></li>
+            <li><a href="http://smd-records.com/tr808/">http://smd-records.com/tr808/</a></li>
+        </ul>
+        <h3>Code (gitcommit.html, assets/project4/final.js)</h3>
+        <a href="http://www.github.com/kyungyunlee/ctp431">github</a>
+        <br>
+        <br>
         <div>
-          <p class="panel_label"> Tempo (bpm)</p>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/sKNsAAuzi0g?vq=hd720" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-        <div id="tempo_dial"></div>
-        <div id="tempo_number"></div>
-      </div>
-
-
-
-    </div>
-    <p id="username_warning"></p>
-
-
-    
-    <!-- <div><p id="play_button"></p></div> -->
-    <div id="current_chord"></div>
-    <button class="btn" id="play_button" onclick="click_playbutton()">Waiting for you to enter username</button>
-
-    <div id="controllers" > 
-
-      <div class="row" id="chord_inst">
-        <div class="column" id="chord_buttons">
-        <p>Choose a chord progression</p>
-          <button class="btn mybtn" id="c_maj" onclick="set_cmajor()">C major</button>
-          <button class="btn mybtn" id="a_min" onclick="set_aminor()">Blues in A major</button>
-        </div>
-
-        <div class="column" id="inst_buttons">
-        <p>Choose an instrument</p>
-          <button class="btn mybtn" id="piano" onclick="set_piano()">piano</button>
-          <button class="btn mybtn" id="flute" onclick="set_flute()">flute</button>
-          <button class="btn mybtn" id="xylophone" onclick="set_xylophone()">xylophone</button>
-          <button class="btn mybtn" id="tr808" onclick="set_percussion()">TR808</button>
-
-        </div>
-      </div>
-      <p>Or go with a theme</p>
-      <div id="theme_buttons">
-        <button class="btn mybtn" id="christmas" onclick="set_christmas()">christmas</button>
-        <button class="btn mybtn" id="horror" onclick="set_horror()">horror</button>
-      </div>
-      
-      <p id="suggestions">Not satisfied with yours? Next time, try to commit like these cool sounding ones ;)</p>
-      <div id="commit_suggestions">
-        <button class="btn mybtn" id="tr808pattern1" onclick="tr808_pattern1()">TR808 Afrika Bambaataa</button>
-        <button class="btn mybtn" id="twinkletwinkle" onclick="twinkletwinkle()">Twinkle twinkle</button>
-        <button class="btn mybtn" id="random" onclick="randomize()">RANDOM!</button>
-      </div>
-    </div>
-
-    <!-- <div><p id="christmas_button"></p></div> -->
-    
-  </body>
-
-<script> 
-var current_bpm=100;
-notify_change_in_bpm(current_bpm);
-  // tempo
-var tempo_dial = new Nexus.Dial('#tempo_dial',{
-  'size': [75,75],
-  'interaction': 'radial', // "radial", "vertical", or "horizontal"
-  'mode': 'absolute', // "absolute" or "relative"
-  'min': 50,
-  'max': 200,
-  'step': 1,
-  'value': current_bpm,
-})
-var tempo_number = new Nexus.Number('#tempo_number',{
-  'size': [60,30],
-  'value': current_bpm,
-  'min': 50,
-  'max': 200,
-  'step': 1
-})
-// link tempo dial to tempo number
-tempo_number.link(tempo_dial);
-
-// tempo change
-tempo_dial.on('change',function(v) {
-	// convert BPM to internal in milisecond
-  // note that 4 steps correspond to one beat in the sequencer
-  console.log("tempo change", v);
-  notify_change_in_bpm(v);
-})
-console.log("hi from html");
-initialize_tempo_dial();
-  </script>
-
-
-  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-crossorigin="anonymous"></script> 
+    </body>
 </html>

@@ -2,12 +2,13 @@ body{
     padding:2%;
     font-family: monospace;
 }
-h1 {
+h1, h2 {
     text-align: center;
     margin:auto;
     width:50%;
     padding:2%;
 }
+
 div#userform {
     text-align: center;
     margin:auto;

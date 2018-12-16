@@ -22,19 +22,9 @@ var Dm7b5 = ["C4", "G#4", "F4", "D4", "G#3", "F3", "D3"];
 
 var BASIC_C_MAJOR = [ C, F, G, C];
 
+// GLOBAL VARIABLES TO CHANGE OVERALL SETTINGS 
+var synthPart;
 
-function jazzy_chord_progression(){
-  // var JAZZY_CHORDS = [C7, F_sharp_dim, C, A7b9, Dm7];
-  var JAZZY_CHORDS = [C, G, F, C];
-  var jazzy_progression = [];
-  for (var i=0; i<53; i++) {
-    // var rand_chord_idx = Math.floor(Math.random() * JAZZY_CHORDS.length);
-    rand_chord_idx = i % JAZZY_CHORDS.length;
-    jazzy_progression.push(JAZZY_CHORDS[rand_chord_idx]);
-  }
-  console.log("jazzy progression", jazzy_progression);
-  return jazzy_progression;
-}
 
 function basic_progression(){
   var basic_chords = [C, C, F, F, F, F, F7, F7, G, G, G, G, C, C];
@@ -186,7 +176,7 @@ function randomize(){
 
   current_instrument_set = PIANO;
   current_colors = GREEN;
-  set_tempo(Math.random() * 150);
+  set_tempo(100);
   colorSequencer();
   make_play_button();
 
@@ -247,13 +237,6 @@ var flute = SampleLibrary.load({
   instruments:"flute",
 }).toMaster();
 
-var saxophone = SampleLibrary.load({
-  instruments:"saxophone",
-}).toMaster();
-
-var guitar_electric=SampleLibrary.load({
-  instruments:"guitar-electric",
-}).toMaster();  
 
 var xylophone = SampleLibrary.load({
   instruments:"xylophone",
@@ -302,12 +285,15 @@ const PURPLEBLUE = ['rgb(167,54,168)', 'rgb(86,185,203)','rgb(68,121,168)' ,'rgb
 // const PURPLEBLUE = ['rgb(73, 172,182)','rgb(197, 71,96)','rgb(62, 167, 182)','rgb(199,73,96)']
 const MELODY = ['rgb(246,215,81)',  'rgb(86, 131,227)','rgb(153,201,83)', 'rgb(239,97,118)'];
 
+
 // GLOBAL VARIABLES TO CHANGE OVERALL SETTINGS 
-var synthPart;
 var current_progression = basic_progression();
 var current_instrument_set = PIANO;
 var current_colors = GREEN;
 var current_bpm;
+
+
+
 
 // tempo dial from html
 var tempodial;
@@ -474,6 +460,7 @@ function set_christmas(){
   current_progression = progression;
   current_colors = REDGREEN;
   colorSequencer();
+  set_tempo(100);
   // resetChords(binary_contribs);
 }
 
@@ -518,6 +505,8 @@ function make_play_button(){
   playbutton = document.getElementById("play_button");
   playbutton.innerHTML = "play";
   playbutton.isPlaying = false;
+
+  // console.log("!!!!!", synthPart.loaded);
 }
 
 function click_playbutton(){
@@ -624,6 +613,7 @@ function playAll() {
       }
     })
   }, range, '8n').start();
+
 
   synthPart.loop = true;
 //   // synthPart.humanize = true;
