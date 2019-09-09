@@ -94,11 +94,11 @@ function setup() {
 
     // mic input && audio link
     mic = new p5.AudioIn();
-    youtubelink = select("#youtube-link");
-    curr_link = youtubelink.value();
-    console.log(curr_link);
-    submitlink = select("#submit-link");
-    submitlink.mousePressed(newlink);
+    // youtubelink = select("#youtube-link");
+    // curr_link = youtubelink.value();
+    // console.log(curr_link);
+    // submitlink = select("#submit-link");
+    // submitlink.mousePressed(newlink);
 
     // mic on/off button
     micbutton = createButton("use mic");
@@ -240,6 +240,7 @@ function newText() {
 
 
 /***** function for handling new youtube link *****/
+/** 
 function newlink() {
     if (is_youtube_on) {
         closeYoutube();
@@ -273,7 +274,7 @@ function closeYoutube() {
     stopmic();
     is_youtube_on = false;
 }
-
+**/ 
 
 /***** functions for handling user's local mp3 file *****/
 function handleFile(file) {
